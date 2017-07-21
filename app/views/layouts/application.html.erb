@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>TETimetable</title>
+    <title>Запись на прием | <%= yield(:title) %> </title>
     <%= csrf_meta_tags %>
 
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
@@ -10,5 +10,9 @@
 
   <body>
     <%= yield %>
+
+    <%= debug(params) if Rails.env.development? %>
+    <br>
+    <%= debug(request.uuid) if Rails.env.development? %>
   </body>
 </html>

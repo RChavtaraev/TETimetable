@@ -1,0 +1,16 @@
+<div>
+
+  <% @appointments = Appointment.GetAppointmentRange(params.fetch(:start_date, Date.current).to_date) %>
+  <%= week_calendar events: @appointments do |date, appointments| %>
+
+      <div><%=date.strftime("%d.%m") %></div>
+      <% appointments.each do |appointment| %>
+          <div>
+            <%=appointment.start_time.strftime("%H:%M")%>
+          </div>
+      <% end %>
+  <% end %>
+
+</div>
+<%#= debug(@appointments) if Rails.env.development? %>
+<%#= debug(@appointments.length) if Rails.env.development? %>
