@@ -1,2 +1,32 @@
-<h1>Appointments#new</h1>
-<p>Find me in app/views/appointments/new.html.erb</p>
+<% provide(:title, 'Новая запись') %>
+<h1>Новая запись</h1>
+
+<div class="row">
+  <div class="span6 offset3">
+    <%= form_for(@appointment) do |f| %>
+
+        <%= f.label :customer_name, "Пациент:" %>
+        <%= f.text_field :customer_name %>
+
+        <table>
+          <tr>
+            <td><%= f.label :start_date, "Дата:" %></td>
+            <td><%= f.label :start_time, "Время:" %></td>
+            <td><%= f.label :duration, "Длительность (мин):" %></td>
+          </tr>
+          <tr>
+            <td><%= f.date_field :start_date %></td>
+            <td><%= f.time_field :start_time %></td>
+            <td> <%= f.number_field :duration %></td>
+
+          </tr>
+        </table>
+
+        <%= f.label :comment, "Заметки:" %>
+        <%= f.text_area :comment, size: "60" %>
+
+        <%= f.submit "Добавить запись", class: "btn btn-large btn-primary" %>
+    <% end %>
+  </div>
+</div>
+<%#= debug(@appointment) if Rails.env.development? %>
