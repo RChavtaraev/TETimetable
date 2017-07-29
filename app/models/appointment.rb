@@ -1,19 +1,12 @@
 class Appointment < ApplicationRecord
+  belongs_to :customer
+  validates :customer_id, presence: true
+  attr_accessor :start_date
+  attr_accessor :duration
+  attr_accessor :customer_name
 
-  attr_reader :start_date
-  def start_date=(value)
-    @start_date = value
-  end
 
-  attr_reader :customer_name
-  def customer_name=(value)
-    @customer_name = value
-  end
 
-  attr_reader :duration
-  def duration=(value)
-    @duration = value
-  end
 
   def Appointment.GetAppointmentRange(date)
     first_data = date.beginning_of_week

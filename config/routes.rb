@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
-  resources :appointments
+  resources :appointments do
+    get :autocomplete_customer_name, :on => :collection
+  end
   get 'timetable/home'
 
 
