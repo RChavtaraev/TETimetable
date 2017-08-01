@@ -13,11 +13,46 @@ class AppointmentsController < ApplicationController
 
   def create
     @appointment = Appointment.new(appointment_params)
+    @appointment.transaction do
+      if params.require(:customer)[:id].empty?
+        customer = Customer.new(customer_params)
+        r = customer.save
+      else
+        customer = Customer.find(params.require(:customer)[:id])
+      end
+      @appointment.customer = customer
+      dt = @appointment.start_date.to_date
+      tm = @appointment.start_time.utc.to_time
+      @appointment.start_time =  DateTime.new(dt.year, dt.month, dt.day, tm.hour, tm.min, tm.sec )
+      tm = tm.to_time + @appointment.duration.to_i * 60
+      @appointment.end_time = DateTime.new(dt.year, dt.month, dt.day, tm.hour, tm.min, tm.sec )
+      #    @appointment.start_time + @appointment.duration * 60
+      r = @appointment.save
+      redirect_to controller: 'timetable', action: 'home', start_date: dt #timetable_home_url
+    end
+    #end
+  end
+
+  def edit
+    @appointment = Appointment.find(params[:id])
+    @appointment.start_date = @appointment.start_time.to_date
+    @appointment.duration = @appointment.GetDuration() #((@appointment.end_time.to_i - @appointment.start_time.to_i) / 60).to_i
+  end
+
+  def destroy
+    @appointment = Appointment.find(params[:id])
+    dt = @appointment.start_time
+    @appointment.destroy
+    redirect_to controller: 'timetable', action: 'home', start_date: dt
   end
 
   private
   def appointment_params
-    params.require(:appointment).permit(:customer_name, :start_time, :start_date, :duration, :comment)
+    params.require(:appointment).permit(:start_time, :start_date, :duration, :comment, :place_id)
+  end
+
+  def customer_params
+    params.require(:customer).permit(:id, :name, :phone, :email, :birth_date, :address)
   end
 
 

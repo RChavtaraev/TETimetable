@@ -1,0 +1,74 @@
+<% provide(:title, 'Редактирование записи') %>
+<script type="application/javascript">
+  $(document).ready(function() {
+
+    $('div.expandable').expander({
+      slicePoint:       0,
+      expandText: 'подробнее...',
+      userCollapseText: 'скрыть подробности'
+    });
+  });
+  function clr()
+  {
+    if ($('#id').val() != '') {
+      $('#id').val("");
+      $('#email').val("");
+      $('#phone').val("");
+      $('#birth_date').val("");
+      $('#address').val("");
+    }
+  }
+</script>
+
+<h1>Редактирование записи</h1>
+
+
+<div class="row">
+  <div class="span6 offset3">
+    <%= form_for(@appointment) do |f| %>
+
+        <%= fields_for(@appointment.customer) do |customer_fields| %>
+
+            <%= customer_fields.hidden_field :id, id: 'id' %>
+            <%= customer_fields.label :name, "Пациент:" %>
+            <%= customer_fields.autocomplete_field :name, autocomplete_customer_name_appointments_path, onkeypress: "clr()", :update_elements => {:email => '#email', :phone => '#phone', :birth_date => '#birth_date', :address => '#address', :id => '#id'}%>
+            <div class="expandable">
+              <table>
+                <tr>
+                  <td><%= customer_fields.label :email, "E-mail:" %></td>
+                  <td><%= customer_fields.label :phone, "Телефон:" %></td>
+                </tr>
+                <tr>
+                  <td><%= customer_fields.email_field :email, id: 'email' %></td>
+                  <td><%= customer_fields.telephone_field :phone, id: 'phone' %></td>
+                </tr>
+              </table>
+              <%= customer_fields.label :birth_date, "Дата рождения:" %>
+              <%= customer_fields.date_field :birth_date, id: 'birth_date'   %>
+              <%= customer_fields.label :address, "Адрес:" %>
+              <%= customer_fields.text_area :address, id: 'address'  %>
+            </div>
+        <% end %>
+        <%= f.label :place_id, "Мед. центр:" %>
+        <%= f.collection_select :place_id, Place.all, :id, :name %>
+        <table>
+          <tr>
+            <td><%= f.label :start_date, "Дата:" %></td>
+            <td><%= f.label :start_time, "Время:"  %></td>
+            <td><%= f.label :duration, "Длительность (мин):" %></td>
+          </tr>
+          <tr>
+            <td><%= f.date_field :start_date %></td>
+            <td><%= f.time_field :start_time %></td>
+            <td> <%= f.number_field :duration, in: 15...121 %></td>
+
+          </tr>
+        </table>
+
+        <%= f.label :comment, "Заметки:" %>
+        <%= f.text_area :comment, size: "60" %>
+
+        <%= f.submit "Изменить", class: "btn btn-large btn-primary" %>
+    <% end %>
+  </div>
+</div>

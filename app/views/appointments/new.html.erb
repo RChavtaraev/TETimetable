@@ -50,8 +50,8 @@
             <%= customer_fields.text_area :address, id: 'address'  %>
             </div>
         <% end %>
-
-
+        <%= f.label :place_id, "Мед. центр:" %>
+        <%= f.collection_select :place_id, Place.all, :id, :name %>
         <table>
           <tr>
             <td><%= f.label :start_date, "Дата:" %></td>
@@ -61,7 +61,7 @@
           <tr>
             <td><%= f.date_field :start_date %></td>
             <td><%= f.time_field :start_time %></td>
-            <td> <%= f.number_field :duration %></td>
+            <td> <%= f.number_field :duration, in: 15...121 %></td>
 
           </tr>
         </table>

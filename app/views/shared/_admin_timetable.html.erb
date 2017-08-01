@@ -1,0 +1,35 @@
+<div>
+
+  <% @appointments = Appointment.GetAppointmentRange(params.fetch(:start_date, Date.current).to_date) %>
+  <%= week_calendar events: @appointments do |date, appointments| %>
+
+      <div><%=date.strftime("%d.%m") %></div>
+      <% appointments.each do |appointment| %>
+          <div style="border: solid 1px black">
+            <div>
+              <a href="/appointments/<%=appointment.id %>/edit" >
+                <%=appointment.start_time.strftime("%H:%M")%>
+
+              </a>
+            </div>
+            <div>
+              <%=appointment.GetDuration()%> мин
+            </div>
+            <div>
+              <%=appointment.customer.name%>
+            </div>
+            <div>
+              <%=appointment.customer.phone%>
+            </div>
+            <div>
+              <%= link_to "Удалить", appointment, method: :delete,
+                          data: { confirm: "Удалить запись от #{appointment.start_time.strftime("%d.%m %H:%M")} для #{appointment.customer.name} ?" },
+                          title: "Удаление записи" %>
+            </div>
+          </div>
+          <br>
+      <% end %>
+      <a href="/appointments/new?start_date=<%= date.to_date %>" >Добавить запись</a>
+  <% end %>
+
+</div>

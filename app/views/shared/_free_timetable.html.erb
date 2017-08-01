@@ -6,7 +6,9 @@
       <div><%=date.strftime("%d.%m") %></div>
       <% appointments.each do |appointment| %>
           <div>
-            <%=appointment.start_time.strftime("%H:%M")%>
+            <a href="/appointments/<%=appointment.id %>/edit" >
+              <%=appointment.start_time.strftime("%H:%M")%>
+            </a>
           </div>
       <% end %>
   <% end %>
