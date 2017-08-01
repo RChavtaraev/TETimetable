@@ -69,6 +69,8 @@
         <%= f.text_area :comment, size: "60" %>
 
         <%= f.submit "Изменить", class: "btn btn-large btn-primary" %>
+        <%= link_to "Удалить", @appointment, method: :delete, class: "btn btn-large btn-primary",
+                    data: { confirm: "Удалить запись от #{@appointment.start_time.strftime("%d.%m %H:%M")} для #{@appointment.customer.name} ?" } %>
     <% end %>
   </div>
 </div>

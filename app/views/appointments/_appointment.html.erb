@@ -1,0 +1,11 @@
+<li>
+  <span class="timestamp">
+    <a href="/appointments/<%=appointment.id %>/edit" >
+      <%= appointment.start_time.strftime("%d.%m.%y %H:%M") %>
+
+    </a>
+  </span>
+  <span>
+    <%= appointment.place.name %>
+  </span>
+</li>

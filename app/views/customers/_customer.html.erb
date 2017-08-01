@@ -1,0 +1,11 @@
+<li>
+  <span class="customername">
+    <a href="/customers/<%=customer.id %>/edit" >
+      <%= customer.name %>
+    </a>
+  </span>
+  <span class="timestamp"><%= '(' + customer.birth_date.strftime("%d.%m.%y") + ')' if !customer.birth_date.nil? %></span>
+  <% if !customer.phone.nil?  %>
+    <span class="phone"><a href="tel:<%=customer.phone %>" ><%= customer.phone %></a></span>
+  <% end %>
+</li>

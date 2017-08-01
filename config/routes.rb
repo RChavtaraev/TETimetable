@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+
+  resources :customers
   resources :appointments do
     get :autocomplete_customer_name, :on => :collection
   end

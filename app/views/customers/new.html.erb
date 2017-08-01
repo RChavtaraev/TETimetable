@@ -1,0 +1,28 @@
+<% provide(:title, 'Новый пациент') %>
+
+<h1>Новый пациент</h1>
+
+<div class="row">
+  <div class="span6 offset3">
+    <%= form_for(@customer) do |customer_fields| %>
+        <%= customer_fields.label :name, "ФИО:" %>
+        <%= customer_fields.text_field :name %>
+
+        <table>
+          <tr>
+            <td><%= customer_fields.label :email, "E-mail:" %></td>
+            <td><%= customer_fields.label :phone, "Телефон:" %></td>
+          </tr>
+          <tr>
+            <td><%= customer_fields.email_field :email %></td>
+            <td><%= customer_fields.telephone_field :phone %></td>
+          </tr>
+        </table>
+        <%= customer_fields.label :birth_date, "Дата рождения:" %>
+        <%= customer_fields.date_field :birth_date %>
+        <%= customer_fields.label :address, "Адрес:" %>
+        <%= customer_fields.text_area :address  %>
+        <%= customer_fields.submit "Добавить", class: "btn btn-large btn-primary" %>
+    <% end %>
+  </div>
+</div>

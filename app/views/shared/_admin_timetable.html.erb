@@ -1,5 +1,4 @@
 <div>
-
   <% @appointments = Appointment.GetAppointmentRange(params.fetch(:start_date, Date.current).to_date) %>
   <%= week_calendar events: @appointments do |date, appointments| %>
 

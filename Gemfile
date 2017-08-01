@@ -14,6 +14,7 @@ gem 'rails', '~> 5.0.2'
 gem 'pg' #, '0.15.1'
 gem 'bootstrap-sass', '2.3.2.0'
 gem 'bcrypt-ruby'
+gem 'will_paginate'
 
 # Use Puma as the app server
 gem 'puma', '~> 3.0'

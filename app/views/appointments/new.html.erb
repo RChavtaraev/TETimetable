@@ -34,20 +34,20 @@
             <%= customer_fields.label :name, "Пациент:" %>
             <%= customer_fields.autocomplete_field :name, autocomplete_customer_name_appointments_path, onkeypress: "clr()", :update_elements => {:email => '#email', :phone => '#phone', :birth_date => '#birth_date', :address => '#address', :id => '#id'}%>
             <div class="expandable">
-            <table>
-              <tr>
-                <td><%= customer_fields.label :email, "E-mail:" %></td>
-                <td><%= customer_fields.label :phone, "Телефон:" %></td>
-              </tr>
-              <tr>
-                <td><%= customer_fields.email_field :email, id: 'email' %></td>
-                <td><%= customer_fields.telephone_field :phone, id: 'phone' %></td>
-              </tr>
-            </table>
-            <%= customer_fields.label :birth_date, "Дата рождения:" %>
-            <%= customer_fields.date_field :birth_date, id: 'birth_date'   %>
-            <%= customer_fields.label :address, "Адрес:" %>
-            <%= customer_fields.text_area :address, id: 'address'  %>
+              <table>
+                <tr>
+                  <td><%= customer_fields.label :email, "E-mail:" %></td>
+                  <td><%= customer_fields.label :phone, "Телефон:" %></td>
+                </tr>
+                <tr>
+                  <td><%= customer_fields.email_field :email, id: 'email' %></td>
+                  <td><%= customer_fields.telephone_field :phone, id: 'phone' %></td>
+                </tr>
+              </table>
+              <%= customer_fields.label :birth_date, "Дата рождения:" %>
+              <%= customer_fields.date_field :birth_date, id: 'birth_date'   %>
+              <%= customer_fields.label :address, "Адрес:" %>
+              <%= customer_fields.text_area :address, id: 'address'  %>
             </div>
         <% end %>
         <%= f.label :place_id, "Мед. центр:" %>

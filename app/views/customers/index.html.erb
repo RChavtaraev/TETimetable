@@ -1,0 +1,16 @@
+<% provide(:title, 'Пациенты') %>
+
+<h1>Пациенты</h1>
+<div class="row">
+  <div class="span6 offset3">
+    <%= form_tag("/customers", method: "get") do %>
+        <%= text_field_tag(:customer_name) %>
+        <%= submit_tag("Поиск", class:"btn btn-large btn-primary") %>
+    <% end %>
+    <%= will_paginate %>
+    <ul class="customers">
+      <%= render @customers %>
+    </ul>
+    <%= will_paginate %>
+  </div>
+</div>
