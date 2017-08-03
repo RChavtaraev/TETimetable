@@ -1,0 +1,26 @@
+<nav class="navbar navbar-default navbar-fixed-top ">
+  <div class="container">
+
+    <ul class="nav navbar-nav navbar-right">
+      <li><%= link_to "На главную", root_path %></li>
+      <% if signed_in? %>
+        <li><%= link_to "Пациенты", customers_path %></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            [Имя пользователя] <b class="caret"></b>
+          </a>
+          <ul class="dropdown-menu">
+            <li><%= link_to "Профиль", '#' %></li>
+            <li class="divider"></li>
+            <li>
+              <%= link_to "Выход", '#' %>
+            </li>
+          </ul>
+        </li>
+      <% else %>
+          <li><%= link_to "Вход", '#' %></li>
+          <li><%= link_to "Регистрация", '#' %></li>
+      <% end %>
+    </ul>
+  </div>
+</nav>

@@ -1,4 +1,6 @@
+@import "bootstrap-sprockets";
 @import "bootstrap";
+@import 'bootstrap/glyphicons';
 
 $lightGray: #999;
 /* universal*/
@@ -46,7 +48,7 @@ h2 {
   margin-bottom: 30px;
   text-align: center;
   font-weight: normal;
-  color: $grayLight;
+  color: $gray-light;
 }
 
 p {
@@ -80,12 +82,12 @@ footer {
   margin-top: 45px;
   padding-top: 5px;
   border-top: 1px solid #eaeaea;
-  color: $grayLight;
+  color: $gray-light;
 
   a {
     color: $gray;
     &:hover {
-      color: $grayDarker;
+      color: $gray-darker;
     }
   }
 }
@@ -124,7 +126,7 @@ $grayMediumLight: #eaeaea;
 aside {
   section {
     padding: 10px 0;
-    border-top: 1px solid $grayLighter;
+    border-top: 1px solid $gray-lighter;
     &:first-child {
       border: 0;
       padding-top: 0;
@@ -153,18 +155,73 @@ aside {
 
 input, textarea, select, .uneditable-input {
   border: 1px solid #bbb;
-  width: 100%;
+  /*width: 100%;*/
   margin-bottom: 15px;
   @include box_sizing;
+
+}
+
+.form-control {
+  padding: 4px 6px;
+
+}
+
+.customer-form, .appointment-form {
+  td{
+    padding-right: 5px;
+  }
+}
+
+.search {
+  padding-bottom: 10px;
+}
+
+.btn-circle {
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  padding: 6px 0;
+  font-size: 12px;
+  line-height: 1.428571429;
+  border-radius: 15px;
+}
+.del-btn-circle {
+  width: 20px;
+  height: 20px;
+  text-align: center;
+  padding: 3px 0;
+  font-size: 10px;
+  line-height: 1.428571429;
+  border-radius: 10px;
+  margin-right: 4px;
+}
+
+/*
+input[type="date"].form-control,
+input[type="time"].form-control,
+input[type="datetime-local"].form-control,
+input[type="month"].form-control
+{
+  line-height: 20px;
 }
 
 input {
   height: auto !important;
-
-
 }
+
+input[type="date"].form-control,
+input[type="time"].form-control {
+  margin-left: 5px;
+}
+*/
+
+
 #error_explanation {
   color: #f00;
+  .alert {
+    padding: 5px;
+    margin: 0px;
+  }
   ul {
     list-style: none;
     margin: 0 0 18px 0;
@@ -172,8 +229,8 @@ input {
 }
 
 .field_with_errors {
-  @extend .control-group;
-  @extend .error;
+  @extend .form-group;
+  @extend .has-error;
 }
 
 .users {
@@ -182,9 +239,9 @@ input {
   li {
     overflow: auto;
     padding: 10px 0;
-    border-top: 1px solid $grayLighter;
+    border-top: 1px solid $gray-lighter;
     &:last-child {
-      border-bottom: 1px solid $grayLighter;
+      border-bottom: 1px solid $gray-lighter;
     }
   }
 }
@@ -204,7 +261,7 @@ input {
   display: block;
 }
 .timestamp {
-  color: $grayLight;
+  color: $gray-light;
 }
 .gravatar {
   float: left;

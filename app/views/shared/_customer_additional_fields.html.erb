@@ -1,0 +1,14 @@
+<table class="customer-form">
+  <tr>
+    <td><%= f.label :email, "E-mail:" %></td>
+    <td><%= f.label :phone, "Телефон:" %></td>
+  </tr>
+  <tr>
+    <td><%= f.email_field :email, id: 'email', class: "form-control" %></td>
+    <td><%= f.telephone_field :phone, id: 'phone', class: "form-control" %></td>
+  </tr>
+</table>
+<%= f.label :birth_date, "Дата рождения:" %>
+<%= f.date_field :birth_date, id: 'birth_date', class: "form-control"   %>
+<%= f.label :address, "Адрес:" %>
+<%= f.text_area :address, id: 'address', class: "form-control"  %>

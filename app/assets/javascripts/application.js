@@ -16,4 +16,7 @@
 //= require jquery.expander/v1.4.12/jquery.expander.js
 //= require jquery-ui/widgets/autocomplete
 //= require autocomplete-rails
+//= require bootstrap
+//= require bootstrap-sprockets
 //= require_tree .
+

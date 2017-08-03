@@ -1,13 +1,17 @@
 <div class="simple-calendar">
   <div class="calendar-heading">
     <% @daterange = date_range%>
-    <%= link_to t('simple_calendar.previous', default: 'Предыдущая неделя'), calendar.url_for_previous_view %>
+    <%= link_to calendar.url_for_previous_view, title: "Предыдущая неделя" do %>
+        <i class="glyphicon glyphicon-arrow-left"></i>
+    <% end %>
     <% if calendar.number_of_weeks == 1 %>
       <span class="calendar-title">С <%=date_range[0].strftime("%d.%m")%> по <%=date_range[-1].strftime("%d.%m")%></span>
     <%else%>
         <span class="calendar-title">Неделя <%= calendar.week_number %> - <%= calendar.end_week %></span>
     <%end%>
-        <%= link_to t('simple_calendar.next', default: 'Следующая неделя'), calendar.url_for_next_view %>
+        <%= link_to calendar.url_for_next_view, title: "Следующая неделя"  do %>
+        <i class="glyphicon glyphicon-arrow-right"></i>
+    <% end %>
   </div>
   <%
     t('date.abbr_day_names')[1] = 'Пн'

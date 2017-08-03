@@ -1,14 +1,19 @@
 <% provide(:title, 'Пациенты') %>
-
-<h1>Пациенты</h1>
 <div class="row">
-  <div class="span6 offset3">
+  <div class="class=col-md-6 col-md-offset-3">
+    <h1>Пациенты</h1>
     <%= form_tag("/customers", method: "get") do %>
-        <%= text_field_tag(:customer_name) %>
-        <%= submit_tag("Поиск", class:"btn btn-large btn-primary") %>
+        <div class="input-group col-md-12 search">
+        <%= text_field_tag(:customer_name, "", class: "form-control input-lg", placeholder: "Введите имя пациента для поиска") %>
+          <span class="input-group-btn">
+            <%= button_tag(type: "submit", class:"btn btn-info btn-lg") do %>
+              <i class="glyphicon glyphicon-search"></i>
+            <% end %>
+          </span>
+        </div>
     <% end %>
     <%= will_paginate %>
-    <ul class="customers">
+    <ul class="list-group">
       <%= render @customers %>
     </ul>
     <%= will_paginate %>

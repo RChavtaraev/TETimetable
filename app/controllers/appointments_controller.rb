@@ -5,30 +5,21 @@ class AppointmentsController < ApplicationController
   def new
     start_date_param = params.fetch(:start_date, Date.current)
     start_time_param = params.fetch(:start_time, (Time.current + 1.hour).at_beginning_of_hour)
-    @appointment = Appointment.new(start_time: start_time_param.to_time,
-                                   start_date:  start_date_param.to_date,
-                                   duration: 45)
+    @appointment = Appointment.new( start_time: start_time_param.to_time,
+                                    start_date:  start_date_param.to_date,
+                                    duration: 45)
     @appointment.customer = Customer.new()
   end
 
   def create
     @appointment = Appointment.new(appointment_params)
     @appointment.transaction do
-      if params.require(:customer)[:id].empty?
-        customer = Customer.new(customer_params)
-        r = customer.save
+      dt = SetAttributes(@appointment)
+      if @appointment.save
+       redirect_to controller: 'timetable', action: 'home', start_date: dt #timetable_home_url
       else
-        customer = Customer.find(params.require(:customer)[:id])
+        render 'new'
       end
-      @appointment.customer = customer
-      dt = @appointment.start_date.to_date
-      tm = @appointment.start_time.utc.to_time
-      @appointment.start_time =  DateTime.new(dt.year, dt.month, dt.day, tm.hour, tm.min, tm.sec )
-      tm = tm.to_time + @appointment.duration.to_i * 60
-      @appointment.end_time = DateTime.new(dt.year, dt.month, dt.day, tm.hour, tm.min, tm.sec )
-      #    @appointment.start_time + @appointment.duration * 60
-      r = @appointment.save
-      redirect_to controller: 'timetable', action: 'home', start_date: dt #timetable_home_url
     end
     #end
   end
@@ -37,6 +28,41 @@ class AppointmentsController < ApplicationController
     @appointment = Appointment.find(params[:id])
     @appointment.start_date = @appointment.start_time.to_date
     @appointment.duration = @appointment.GetDuration() #((@appointment.end_time.to_i - @appointment.start_time.to_i) / 60).to_i
+  end
+
+  def update
+    @appointment = Appointment.find(params[:id])
+    @appointment.transaction do
+      @appointment.assign_attributes(appointment_params)
+      SetAttributes(@appointment)
+      if @appointment.save
+        flash[:success] = "Данные сохранены"
+
+        #redirect_to controller: 'timetable', action: 'home', start_date: dt #timetable_home_url
+      else
+
+      end
+      render 'edit'
+    end
+  end
+
+  def SetAttributes(appointment)
+    if params.require(:customer)[:id].empty?
+      customer = Customer.new(customer_params)
+      appointment.customer = customer
+      customer.save
+    else
+      customer = Customer.find(params.require(:customer)[:id])
+    end
+    appointment.customer = customer
+    if !appointment.start_date.nil? && !@appointment.start_time.nil?
+      dt = appointment.start_date.to_date
+      tm = appointment.start_time.utc.to_time
+      appointment.start_time =  DateTime.new(dt.year, dt.month, dt.day, tm.hour, tm.min, tm.sec )
+      tm = tm.to_time + appointment.duration.to_i * 60
+      appointment.end_time = DateTime.new(dt.year, dt.month, dt.day, tm.hour, tm.min, tm.sec )
+    end
+    return dt
   end
 
   def destroy

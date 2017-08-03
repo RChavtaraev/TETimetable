@@ -1,0 +1,18 @@
+<%= f.label :place_id, "Мед. центр:" %>
+<%= f.collection_select :place_id, Place.all, :id, :name, {}, {class: "form-control"} %>
+<table class="appointment-form">
+  <tr>
+    <td><%= f.label :start_date, "Дата:" %></td>
+    <td><%= f.label :start_time, "Время:"  %></td>
+    <td><%= f.label :duration, "Длительность (мин):" %></td>
+  </tr>
+  <tr>
+    <td><%= f.date_field :start_date, class: "form-control" %></td>
+    <td><%= f.time_field :start_time, class: "form-control" %></td>
+    <td> <%= f.number_field :duration, in: 15...121, class: "form-control" %></td>
+
+  </tr>
+</table>
+
+<%= f.label :comment, "Заметки:" %>
+<%= f.text_area :comment, size: "60", class: "form-control" %>

@@ -9,10 +9,14 @@
   </head>
 
   <body>
+    <%= render "/layouts/header" %>
+    <div class="container">
+      <% flash.each do |key, value| %>
+          <!--<div class="alert alert-<%= key %>"><%= value %></div>-->
+          <%= content_tag(:div, value, class: "alert alert-#{key}") %>
+      <% end %>
     <%= yield %>
-
-    <%= debug(params) if Rails.env.development? %>
-    <br>
-    <%= debug(request.uuid) if Rails.env.development? %>
+    <%= render "/layouts/footer" %>
+    </div>
   </body>
 </html>
