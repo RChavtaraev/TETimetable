@@ -1,6 +1,6 @@
 module ApplicationHelper
   def signed_in?
-    true
+    false
   end
 
   def is_admin?

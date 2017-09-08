@@ -7,7 +7,7 @@
         <li><%= link_to "Пациенты", customers_path %></li>
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            [Имя пользователя] <b class="caret"></b>
+            <%= @user.name%> <b class="caret"></b>
           </a>
           <ul class="dropdown-menu">
             <li><%= link_to "Профиль", '#' %></li>
@@ -19,7 +19,7 @@
         </li>
       <% else %>
           <li><%= link_to "Вход", '#' %></li>
-          <li><%= link_to "Регистрация", '#' %></li>
+          <li><%= link_to "Регистрация", 'users/new' %></li>
       <% end %>
     </ul>
   </div>

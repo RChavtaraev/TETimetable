@@ -16,7 +16,7 @@ gem 'bootstrap-sass' #, '2.3.2.0'
 gem 'bootstrap-glyphicons'
 gem 'bcrypt-ruby'
 gem 'will_paginate'
-
+gem 'validates_email_format_of'
 
 # Use Puma as the app server
 gem 'puma', '~> 3.0'

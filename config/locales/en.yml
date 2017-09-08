@@ -21,3 +21,17 @@
 
 en:
   hello: "Hello world"
+
+  activerecord:
+      attributes:
+        user:
+          password: "Пароль"
+      errors:
+        models:
+          user:
+            attributes:
+              password:
+                blank: "Пароль не может быть пустым"
+                too_short: "Пароль должен быть не короче 6 символов"
+              password_confirmation:
+                confirmation: "Подтверждение не совпадает с паролем"

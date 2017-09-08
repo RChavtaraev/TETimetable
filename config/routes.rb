@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+
+
+
   root 'timetables#home'
   resources :customers
 
@@ -15,6 +18,8 @@ Rails.application.routes.draw do
     #post 'check_uncheck', to: :check_uncheck
   end
 
+  resources :users
+  match '/signup',  to: 'users#new', via: 'get'
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
