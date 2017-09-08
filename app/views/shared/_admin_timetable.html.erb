@@ -1,41 +1,72 @@
 <div>
-  <% @appointments = Appointment.GetAppointmentRange(params.fetch(:start_date, Date.current).to_date) %>
   <%= week_calendar events: @appointments do |date, appointments| %>
-
+      <% @last_end_time = date.to_date + 9.hour %>
+      <% @last_place_id = 0 %>
       <!--<div><%#=date.strftime("%d.%m") %></div>-->
       <% appointments.each do |appointment| %>
-          <div style="border: solid 1px black" class="panel panel-info">
-            <div class="panel-heading">
-              <div class="row">
-              <div class="pull-left">
-                <a href="/appointments/<%=appointment.id %>/edit" >
-                  <%=appointment.start_time.strftime("%H:%M")%> - <%=appointment.end_time.strftime("%H:%M")%>
+
+          <% if appointment.id >= 0 %>
+            <div class="panel panel-info">
+              <div class="panel-heading">
+                <div class="row">
+                  <div class="pull-left">
+                    <a href="/appointments/<%=appointment.id %>/edit" >
+                      <strong><%=appointment.start_time.strftime("%H:%M")%> - <%=appointment.end_time.strftime("%H:%M")%>, <%=appointment.place_name %></strong>
+                    </a>
+                  </div>
+                  <% if Time.current < appointment.start_time %>
+                    <div class="pull-right">
+                    <%= link_to appointment, method: :delete,
+                                data: { confirm: "Удалить запись от #{appointment.start_time.strftime("%d.%m %H:%M")} для #{appointment.customer_name} ?" },
+                                title: "Удаление записи", class: "btn btn-danger del-btn-circle" do  %>
+                        <i class="glyphicon glyphicon-remove"></i>
+                    <% end %>
+
+                  </div>
+                  <% end %>
+                </div>
+              </div>
+              <div >
+                <a href="/customers/<%=appointment.customer_id %>/edit" >
+                <%=appointment.customer_name%>
                 </a>
               </div>
-              <div class="pull-right">
-                <%= link_to appointment, method: :delete,
-                            data: { confirm: "Удалить запись от #{appointment.start_time.strftime("%d.%m %H:%M")} для #{appointment.customer.name} ?" },
-                            title: "Удаление записи", class: "btn btn-danger del-btn-circle" do  %>
-                    <i class="glyphicon glyphicon-remove"></i>
-                <% end %>
-              </div>
+              <div  >
+                <%=  appointment.customer_phone%>
               </div>
             </div>
+          <% else %>
+              <% if Time.current < appointment.start_time %>
+                <div  class="panel panel-success">
+                <div class="panel-heading">
+                  <div class="row">
+                    <div class="col-md-1">
+                      <a class="btn btn-success btn-circle" href="/appointments/new?start_time=<%=appointment.start_time %>&end_time=<%=appointment.end_time %>&place_id=<%=appointment.place_id %>" title="Добавить запись" >
+                        <i class="glyphicon glyphicon-plus"></i>
+                      </a>
+                    </div>
+                    <div class="col-md-9 col-md-offset-1">
+                      <strong><%=appointment.start_time.strftime("%H:%M")%> - <%=appointment.end_time.strftime("%H:%M")%>, <%=appointment.place_name %></strong>
+                    </div>
+                  </div>
 
-            <div>
-              <a href="/customers/<%=appointment.customer.id %>/edit" >
-              <%=appointment.customer.name%>
-              </a>
-            </div>
-            <div>
-              <%=appointment.customer.phone%>
-            </div>
-
-          </div>
-
+                </div>
+              </div>
+              <% else %>
+                 <div class="panel panel-danger">
+                    <div class="panel-heading">
+                      <div class="row">
+                        <strong><%=appointment.start_time.strftime("%H:%M")%> - <%=appointment.end_time.strftime("%H:%M")%> - Недоступно</strong>
+                      </div>
+                    </div>
+                  </div>
+              <% end %>
+          <% end %>
+          <% @last_end_time = appointment.end_time %>
+          <% @last_place_id = appointment.place_id %>
       <% end %>
       <% if date.to_date >= Date.current.to_date %>
-        <a class="btn btn-success btn-circle" href="/appointments/new?start_date=<%= date.to_date %>" title="Добавить запись" >
+        <a class="btn btn-success btn-circle" href="/appointments/new?start_time=<%= @last_end_time %>&place_id=<%= @last_place_id %>" title="Добавить запись" >
           <i class="glyphicon glyphicon-plus"></i>
         </a>
       <% end %>

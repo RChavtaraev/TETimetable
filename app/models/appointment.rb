@@ -9,8 +9,15 @@ class Appointment < ApplicationRecord
   #validates_each :start_date, :start_time, :duration do |record, attr, value|
 
   validate do |appointment|
-    existing_appointments = Appointment.where("(start_time <= :st AND end_time >= :st) OR (start_time <= :et AND end_time >= :et)",
-                                              {st: appointment.start_time, et: appointment.end_time})
+    #existing_appointments = Appointment.where("(id <> :id) AND ((start_time < :st AND end_time >= :st) OR (start_time < :et AND end_time >= :et))",
+    #                                          {st: appointment.start_time, et: appointment.end_time, id: appointment.id })
+    existing_appointments = Appointment.where(  "((id <> :id) AND (:st <= start_time AND :et >= end_time) OR
+        (:st <= start_time AND :et >= end_time) OR
+        (:st < end_time AND :et > start_time) OR
+        (:st < start_time AND :et > start_time) OR
+        (:st >= start_time AND :et <= end_time))",
+        {st: appointment.start_time, et: appointment.end_time, id: appointment.id })
+
     if existing_appointments.length > 0
       appointment.errors[:base] << "На данное время уже существует запись"
     end
@@ -30,7 +37,8 @@ class Appointment < ApplicationRecord
   def Appointment.GetAppointmentRange(date)
     first_data = date.beginning_of_week
     last_data = date.end_of_week
-    Appointment.where("start_time >= ? AND end_time <= ?", first_data, last_data)
+    result = Appointment.where("start_time::date >= ? AND end_time::date <= ?", first_data, last_data)
+    return result
   end
 
   def GetDuration()

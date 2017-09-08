@@ -1,0 +1,8 @@
+<% provide(:title, 'Расписание') %>
+<% if is_admin? %>
+    <%= render 'shared/admin_timetable' %>
+<%else %>
+    <%= render 'shared/customer_timetable' %>
+<% end %>
+
+

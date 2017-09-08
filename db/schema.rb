@@ -10,10 +10,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170729102545) do
+ActiveRecord::Schema.define(version: 20170830132704) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "TT_by_date", id: :integer, default: -> { "nextval('appointments_id_seq'::regclass)" }, force: :cascade do |t|
+    t.date    "date"
+    t.integer "place_id"
+    t.integer "status"
+    t.time    "start_time"
+    t.time    "end_time"
+  end
+
+  create_table "TT_by_weekday", id: :integer, default: -> { "nextval('appointments_id_seq'::regclass)" }, force: :cascade do |t|
+    t.integer "place_id"
+    t.integer "status"
+    t.integer "day_of_week"
+    t.time    "end_time"
+    t.time    "start_time"
+  end
 
   create_table "appointments", force: :cascade do |t|
     t.integer  "customer_id"
@@ -46,6 +62,15 @@ ActiveRecord::Schema.define(version: 20170729102545) do
     t.string   "comment"
     t.string   "email"
     t.string   "url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "timetables", force: :cascade do |t|
+    t.datetime "start_time"
+    t.datetime "end_time"
+    t.integer  "status"
+    t.integer  "place_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

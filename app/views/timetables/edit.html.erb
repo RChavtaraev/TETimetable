@@ -1,0 +1,12 @@
+<% provide(:title, 'Редактирование элемента распиания') %>
+<h1>Редактирование элемента расписания</h1>
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+    <%= form_for(@timetable_item) do |f| %>
+        <%= render 'shared/error_messages', object: @timetable_item, title: "Ошибки при изменении элемента распиания: " %>
+        <%= render 'timetable_fields', f: f %>
+        <%= f.submit "Изменить", class: "btn btn-large btn-primary" %>
+
+    <% end %>
+  </div>
+</div>

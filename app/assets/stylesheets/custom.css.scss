@@ -196,6 +196,28 @@ input, textarea, select, .uneditable-input {
   margin-right: 4px;
 }
 
+.panel-heading {
+  padding-left: 26px;
+}
+
+.panel {
+  border: solid 1px black;
+  /*position: absolute;*/
+}
+
+/*
+.day td {
+  width: 250px;
+}
+
+.day {
+  position: relative;
+}
+
+.panel-heading{
+  height: calc(100%);
+}*/
+
 /*
 input[type="date"].form-control,
 input[type="time"].form-control,
