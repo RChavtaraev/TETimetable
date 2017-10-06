@@ -1,0 +1,31 @@
+<% provide(:title, 'Добавление нового мед. центра') %>
+
+<h1>Добавление нового медицинского центра</h1>
+
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+    <%= form_for(@place) do |place_fields| %>
+        <%= render 'shared/error_messages', object: @place, title: "Ошибки при добавлении мед. центра: " %>
+        <%= place_fields.label :name, "Название:" %>
+        <%= place_fields.text_field :name, class: "form-control" %>
+
+        <%= place_fields.label :phone, "Телефон:" %>
+        <%= place_fields.telephone_field :phone, id: 'phone', class: "form-control" %>
+
+        <%= place_fields.label :email, "E-mail:" %>
+        <%= place_fields.email_field :email, id: 'email', class: "form-control" %>
+
+        <%= place_fields.label :url, "Сайт:" %>
+        <%= place_fields.text_field :url, class: "form-control" %>
+
+        <%= place_fields.label :address, "Адрес:" %>
+        <%= place_fields.text_area :address, class: "form-control" %>
+
+        <%= place_fields.label :comment, "Описание:" %>
+        <%= place_fields.text_area :comment, class: "form-control" %>
+
+        <%= place_fields.submit "Добавить", class: "btn btn-large btn-primary" %>
+    <% end %>
+
+  </div>
+</div>

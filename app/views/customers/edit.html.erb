@@ -9,6 +9,7 @@
         <%= customer_fields.label :name, "ФИО:" %>
         <%= customer_fields.text_field :name, class: "form-control" %>
         <%= render 'shared/customer_additional_fields', f:customer_fields %>
+
         <%= customer_fields.submit "Изменить", class: "btn btn-large btn-primary" %>
 
         <% if is_admin? %>

@@ -4,6 +4,7 @@ Rails.application.routes.draw do
 
   root 'timetables#home'
   resources :customers
+  resources :places
 
 
   get "appointments/new_dialog" => 'appointments#new_dialog', :as => :new_dialog

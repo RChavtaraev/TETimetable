@@ -1,0 +1,12 @@
+<% provide(:title, 'Медицинские центры') %>
+<div class="row">
+  <div class="class=col-md-6 col-md-offset-3">
+    <h1>Медицинские центры</h1>
+    <%= will_paginate %>
+    <ul class="list-group">
+      <%= render @places %>
+    </ul>
+    <%= will_paginate %>
+    <%= link_to "Новый мед. центр", new_place_path, class: "btn btn-large btn-primary" %>
+  </div>
+</div>

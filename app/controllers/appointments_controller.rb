@@ -1,6 +1,6 @@
 class AppointmentsController < ApplicationController
 
-  autocomplete :customer, :name, :extra_data => [:phone, :address, :birth_date, :email]
+  autocomplete :customer, :name, :extra_data => [:phone, :address, :birth_date, :email, :comment]
 
   def new
     if !signed_in?

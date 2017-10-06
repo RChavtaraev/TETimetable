@@ -6,6 +6,6 @@
   </span>
   <span class="timestamp"><%= '(' + customer.birth_date.strftime("%d.%m.%y") + ')' if !customer.birth_date.nil? %></span>
   <% if !customer.phone.nil?  %>
-    <span class="phone"><a href="tel:<%=customer.phone %>" ><%= customer.phone %></a></span>
+    <span class="phone"><a href="tel:<%=customer.phone %>" >, Тел: <%= customer.phone %></a></span>
   <% end %>
 </li>

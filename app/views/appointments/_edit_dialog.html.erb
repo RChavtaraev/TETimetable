@@ -16,7 +16,7 @@
 
               <%= customer_fields.hidden_field :id, id: 'id' %>
               <%= customer_fields.label :name, "Пациент:" %>
-              <%= customer_fields.autocomplete_field :name, autocomplete_customer_name_appointments_path, onkeyup: "clr()", :update_elements => {:email => '#email', :phone => '#phone', :birth_date => '#birth_date', :address => '#address', :id => '#id'}, class: "form-control", disabled: !is_admin?%>
+              <%= customer_fields.autocomplete_field :name, autocomplete_customer_name_appointments_path, onkeyup: "clr()", :update_elements => {:email => '#email', :phone => '#phone', :birth_date => '#birth_date', :address => '#address', :id => '#id', :comment => '#comment'}, class: "form-control", disabled: !is_admin?%>
               <div class="expandable">
                 <%= render 'shared/customer_additional_fields', f:customer_fields %>
               </div>
