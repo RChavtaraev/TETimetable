@@ -14,7 +14,7 @@ gem 'rails', '~> 5.0.2'
 gem 'pg' #, '0.15.1'
 gem 'bootstrap-sass' #, '2.3.2.0'
 gem 'bootstrap-glyphicons'
-gem 'bcrypt-ruby'
+gem 'bcrypt' , '~> 3.1.11'
 gem 'will_paginate'
 gem 'validates_email_format_of'
 
@@ -34,6 +34,8 @@ gem 'jquery-rails'
 gem 'jquery-ui-rails'
 gem 'assets-rails'
 gem 'rails-jquery-autocomplete'
+gem 'lazybox'
+gem 'haml-rails'
 
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
 gem 'turbolinks', '~> 5'

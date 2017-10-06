@@ -1,26 +1,30 @@
 <nav class="navbar navbar-default navbar-fixed-top ">
   <div class="container">
-
     <ul class="nav navbar-nav navbar-right">
       <li><%= link_to "На главную", root_path %></li>
       <% if signed_in? %>
-        <li><%= link_to "Пациенты", customers_path %></li>
-        <li class="dropdown">
+          <% if is_admin? %>
+            <li><%= link_to "Расписание", timetables_editweek_path %></li>
+            <li><%= link_to "Пациенты", customers_path %></li>
+          <% end %>
+          <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            <%= @user.name%> <b class="caret"></b>
+            <%= current_user.name%> <b class="caret"></b>
           </a>
           <ul class="dropdown-menu">
-            <li><%= link_to "Профиль", '#' %></li>
-            <li class="divider"></li>
-            <li>
-              <%= link_to "Выход", '#' %>
-            </li>
+            <% if !is_admin? %>
+              <li class="dropdown-item"><%= link_to "Профиль", '/customers/edit' %></li>
+              <li class="dropdown-divider"></li>
+            <% end %>
+            <li class="dropdown-item"><%= link_to "Учетная запись", "/users/#{current_user.id}/edit" %></li>
+            <li class="dropdown-item"><%= link_to "Выход", '/signout', method: "delete" %></li>
           </ul>
         </li>
       <% else %>
-          <li><%= link_to "Вход", '#' %></li>
-          <li><%= link_to "Регистрация", 'users/new' %></li>
+          <li><%= link_to "Регистрация", '/signup' %></li>
+          <li><%= link_to "Вход", '/signin' %></li>
       <% end %>
     </ul>
+
   </div>
 </nav>

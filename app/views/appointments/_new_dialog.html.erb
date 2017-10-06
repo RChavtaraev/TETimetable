@@ -1,0 +1,32 @@
+
+<div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+      <h3 id="myModalLabel">Новая запись на прием</h3>
+    </div>
+    <%= form_for(@appointment, remote: true) do |f| %>
+    <div class="modal-body ui-front">
+<!--class ui-front необходим, чтобы работал autocomlete в модальном окне -->
+
+      <div id="error_explanation" style="display:none;">
+        <strong>Ошибки при добавлении записи на прием:</strong>
+        <ul id="errors"></ul>
+      </div>
+      <%= fields_for(@appointment.customer) do |customer_fields| %>
+          <%= customer_fields.hidden_field :id, id: 'id' %>
+          <%= customer_fields.label :name, "Пациент:" %>
+          <%= customer_fields.autocomplete_field :name, autocomplete_customer_name_appointments_path, onkeypress: "clr()", :update_elements => {:email => '#email', :phone => '#phone', :birth_date => '#birth_date', :address => '#address', :id => '#id'}, class: "form-control", disabled: !is_admin? %>
+          <div class="expandable">
+            <%= render 'shared/customer_additional_fields', f:customer_fields %>
+          </div>
+      <% end %>
+      <%= render 'appointment_fields', f: f %>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" data-dismiss="modal" aria-hidden="true">Отмена</button>
+      <%= f.submit "Добавить запись", class: "btn btn-primary" %>
+    </div>
+    <% end %>
+  </div>
+</div>

@@ -1,32 +1,9 @@
+
 <% provide(:title, 'Редактирование расписания') %>
-<script type="application/javascript" data-turbolinks-eval="false">
 
+<script type="application/javascript">
   var changed = false;
-
-  $(document).ready(function() {
-    changed = false;
-
-    $(document).on("page:before-change turbolinks:load", function() {
-      changed = false;
-
-    });
-
-    $(window).bind("beforeunload", function(event) {
-      if (changed) {
-        event.returnValue = "Изменения на странице не сохранены. Покинуть страницу?";
-        return event.returnValue;
-      }
-    });
-
-    // Turbolinks 4 and 5
-    $(document).on("page:before-change turbolinks:before-visit", function() {
-      if (changed) {
-        return confirm("Изменения на странице не сохранены. Покинуть страницу?");
-      }
-    });
-
-  })
-
+  var initialized = false;
 
   function day_places_change(source){
     ids = source.id.split('_');
@@ -56,8 +33,65 @@
     changed = false;
   }
 
+  $( document).ready(function(){
+    changed = false;
+    if (!initialized) {
+      $(window).bind("beforeunload", function (event) {
+        if (changed) {
+          event.returnValue = "Изменения на странице не сохранены. Покинуть страницу?";
+          changed = !event.returnValue;
+          return event.returnValue;
+        }
+      });
+
+      // Turbolinks 4 and 5
+      $(document).on("page:before-change turbolinks:before-visit", function () {
+        if (changed) {
+          changed = !confirm("Изменения на странице не сохранены. Покинуть страницу?");
+          return !changed
+        }
+      });
+      initialized = true;
+    }
+  })
 
 </script>
+
+<script type="application/javascript"  data-turbolinks-eval="false">
+  $( document ).on('turbolinks:load', function() {
+
+    changed = false;
+    if (!initialized) {
+
+      //$(document).on("page:before-change turbolinks:load", function() {
+      //  changed = false;
+
+      //});
+      if (!initialized) {
+        $(window).bind("beforeunload", function (event) {
+          if (changed) {
+            event.returnValue = "Изменения на странице не сохранены. Покинуть страницу?";
+            changed = !event.returnValue;
+            return event.returnValue;
+          }
+        });
+
+        // Turbolinks 4 and 5
+        $(document).on("page:before-change turbolinks:before-visit", function () {
+          if (changed) {
+            changed = !confirm("Изменения на странице не сохранены. Покинуть страницу?");
+            return !changed
+          }
+        });
+        initialized = true;
+      }
+    }
+
+
+  })
+
+</script>
+
 <div>
   <% @timetables = Timetable.GetSessionsRange(params.fetch(:start_date, Date.current).to_date) %>
   <% @places=Place.all.map { |place| [place.name, place.id] } %>

@@ -5,23 +5,31 @@
           <% @height = (appointment.end_time - appointment.start_time) / 60 %>
           <% if appointment.id >= 0 %>
 
-              <% #if @customer.id == appointment.customer_id %>
-              <% if 0 == appointment.customer_id %>
+              <% if signed_in? && !current_user.customer.nil? && current_user.customer.id == appointment.customer_id %>
+              <% #if 0 == appointment.customer_id %>
                   <div class="panel panel-info" style="top: <%= @top_offset %>px;" >
                     <div class="panel-heading">
                       <div class="row">
-                        <div class="pull-left">
-                            <strong><%=appointment.start_time.strftime("%H:%M")%> - <%=appointment.end_time.strftime("%H:%M")%>, <%=appointment.place_name %></strong>
-                        </div>
-                        <% if Time.current < appointment.start_time %>
-                          <div class="pull-right">
-                          <%= link_to appointment, method: :delete,
-                                      data: { confirm: "Удалить запись от #{appointment.start_time.strftime("%d.%m %H:%M")} для #{appointment.customer_name} ?" },
-                                      title: "Удаление записи", class: "btn btn-danger del-btn-circle" do  %>
-                              <i class="glyphicon glyphicon-remove"></i>
-                          <% end %>
 
-                        </div>
+                        <% if Time.current < appointment.start_time %>
+                          <div class="pull-left">
+                            <%= link_to "/appointments/#{appointment.id}/edit_dialog",
+                                        html_options = {:title =>"Редактировать запись", :remote => true, 'data-toggle' =>  "modal", 'data-target' => '#edit_modal-window', 'data-backdrop' => "static"} do %>
+                                <strong><%=appointment.start_time.strftime("%H:%M")%> - <%=appointment.end_time.strftime("%H:%M")%>, <%=appointment.place_name %></strong>
+                            <% end %>
+                          </div>
+                          <div class="pull-right">
+                            <%= link_to appointment, method: :delete,
+                                        data: { confirm: "Удалить запись от #{appointment.start_time.strftime("%d.%m %H:%M")} для #{appointment.customer_name} ?" },
+                                        title: "Удаление записи", class: "btn btn-danger del-btn-circle" do  %>
+                                <i class="glyphicon glyphicon-remove"></i>
+                            <% end %>
+
+                          </div>
+                        <% else %>
+                          <div class="pull-left">
+                            <strong><%=appointment.start_time.strftime("%H:%M")%> - <%=appointment.end_time.strftime("%H:%M")%>, <%=appointment.place_name %></strong>
+                          </div>
                         <% end %>
                       </div>
                     </div>
@@ -41,9 +49,11 @@
                 <div class="panel-heading">
                   <div class="row">
                     <div class="col-md-1">
-                      <a class="btn btn-success btn-circle" href="/appointments/new?start_time=<%=appointment.start_time %>&end_time=<%=appointment.end_time %>&place_id=<%=appointment.place_id %>" title="Добавить запись" >
-                        <i class="glyphicon glyphicon-plus"></i>
-                      </a>
+                      <%= link_to "/appointments/new_dialog?start_time=#{appointment.start_time}&end_time=#{appointment.end_time}&place_id=#{appointment.place_id}",
+                                  html_options = {:class => "btn btn-success btn-circle" ,:title =>"Добавить запись", :remote => true, 'data-toggle' =>  "modal", 'data-target' => '#new_modal-window', 'data-backdrop' => "static"} do %>
+                          <i class="glyphicon glyphicon-plus"></i>
+                      <% end %>
+
                     </div>
                     <div class="col-md-9 col-md-offset-1">
                       <strong><%=appointment.start_time.strftime("%H:%M")%> - <%=appointment.end_time.strftime("%H:%M")%>, <%=appointment.place_name %></strong>

@@ -11,15 +11,19 @@ class Appointment < ApplicationRecord
   validate do |appointment|
     #existing_appointments = Appointment.where("(id <> :id) AND ((start_time < :st AND end_time >= :st) OR (start_time < :et AND end_time >= :et))",
     #                                          {st: appointment.start_time, et: appointment.end_time, id: appointment.id })
-    existing_appointments = Appointment.where(  "((id <> :id) AND (:st <= start_time AND :et >= end_time) OR
+    if Time.current >= appointment.end_time
+      appointment.errors[:base] << "Запись на это время недоступна"
+    else
+      existing_appointments = Appointment.where(  "(id <> :id OR :id IS NULL ) AND ((:st <= start_time AND :et >= end_time) OR
         (:st <= start_time AND :et >= end_time) OR
         (:st < end_time AND :et > start_time) OR
         (:st < start_time AND :et > start_time) OR
         (:st >= start_time AND :et <= end_time))",
-        {st: appointment.start_time, et: appointment.end_time, id: appointment.id })
+                                                  {st: appointment.start_time, et: appointment.end_time, id: appointment.id })
 
-    if existing_appointments.length > 0
-      appointment.errors[:base] << "На данное время уже существует запись"
+      if existing_appointments.length > 0
+        appointment.errors[:base] << "На данное время уже существует запись"
+      end
     end
   end
 

@@ -1,3 +1,4 @@
+
 <div>
   <%= week_calendar events: @appointments do |date, appointments| %>
       <% @last_end_time = date.to_date + 9.hour %>
@@ -10,9 +11,12 @@
               <div class="panel-heading">
                 <div class="row">
                   <div class="pull-left">
-                    <a href="/appointments/<%=appointment.id %>/edit" >
-                      <strong><%=appointment.start_time.strftime("%H:%M")%> - <%=appointment.end_time.strftime("%H:%M")%>, <%=appointment.place_name %></strong>
-                    </a>
+                    <%= link_to "/appointments/#{appointment.id}/edit_dialog",
+                                html_options = {:title =>"Редактировать запись", :remote => true, 'data-toggle' =>  "modal", 'data-target' => '#edit_modal-window', 'data-backdrop' => "static"} do %>
+                        <strong><%=appointment.start_time.strftime("%H:%M")%> - <%=appointment.end_time.strftime("%H:%M")%>, <%=appointment.place_name %></strong>
+                    <% end %>
+
+
                   </div>
                   <% if Time.current < appointment.start_time %>
                     <div class="pull-right">
@@ -41,9 +45,11 @@
                 <div class="panel-heading">
                   <div class="row">
                     <div class="col-md-1">
-                      <a class="btn btn-success btn-circle" href="/appointments/new?start_time=<%=appointment.start_time %>&end_time=<%=appointment.end_time %>&place_id=<%=appointment.place_id %>" title="Добавить запись" >
-                        <i class="glyphicon glyphicon-plus"></i>
-                      </a>
+                      <%= link_to "/appointments/new_dialog?start_time=#{appointment.start_time}&end_time=#{appointment.end_time}&place_id=#{appointment.place_id}",
+                                  html_options = {:class => "btn btn-success btn-circle" ,:title =>"Добавить запись", :remote => true, 'data-toggle' =>  "modal", 'data-target' => '#new_modal-window', 'data-backdrop' => "static"} do %>
+                          <i class="glyphicon glyphicon-plus"></i>
+                      <% end %>
+
                     </div>
                     <div class="col-md-9 col-md-offset-1">
                       <strong><%=appointment.start_time.strftime("%H:%M")%> - <%=appointment.end_time.strftime("%H:%M")%>, <%=appointment.place_name %></strong>
@@ -66,10 +72,14 @@
           <% @last_place_id = appointment.place_id %>
       <% end %>
       <% if date.to_date >= Date.current.to_date %>
-        <a class="btn btn-success btn-circle" href="/appointments/new?start_time=<%= @last_end_time %>&place_id=<%= @last_place_id %>" title="Добавить запись" >
-          <i class="glyphicon glyphicon-plus"></i>
-        </a>
+        <%= link_to "/appointments/new_dialog?start_time=#{@last_end_time}&place_id=#{@last_place_id}",
+                    html_options = {:class => "btn btn-success btn-circle" ,:title =>"Добавить запись", :remote => true, 'data-toggle' =>  "modal", 'data-target' => '#new_modal-window', 'data-backdrop' => "static"} do %>
+            <i class="glyphicon glyphicon-plus"></i>
+        <% end %>
+
       <% end %>
   <% end %>
 
 </div>
+
+<!--<div id="modal-window" class="modal fade" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div> -->

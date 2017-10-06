@@ -10,9 +10,17 @@
         <%= customer_fields.text_field :name, class: "form-control" %>
         <%= render 'shared/customer_additional_fields', f:customer_fields %>
         <%= customer_fields.submit "Изменить", class: "btn btn-large btn-primary" %>
-        <%= link_to "Удалить", @customer, method: :delete, class: "btn btn-large btn-primary",
+
+        <% if is_admin? %>
+          <%= link_to "Удалить", @customer, method: :delete, class: "btn btn-large btn-primary",
                     data: { confirm: "Удалить пациента #{@customer.name} ?" } %>
+        <% end %>
+
+        <% if !@user.nil? %>
+            <%= link_to "Редактировать учетную запись", edit_user_path(@user), class: "btn btn-large btn-primary" %>
+        <% end %>
     <% end %>
+
     <% if @customer.appointments.any? %>
         <h3>Записи на прием:</h3>
         <ul class="appointments">

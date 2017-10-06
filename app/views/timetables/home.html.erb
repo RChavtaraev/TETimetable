@@ -1,8 +1,25 @@
+
+<script type="application/javascript">
+  $( document ).ajaxError(function(evt, xhr){
+    errors = xhr.responseJSON.errors;
+    $('#errors').empty();
+    $('#error_explanation').show();
+    for (message in errors) {
+      $('#errors').append('<li>' + errors[message] + '</li>');
+    };
+    //alert("Error--");
+  });
+</script>
+<div id="edit_modal-window" class="modal fade" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
+<div id="new_modal-window" class="modal fade" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
+
 <% provide(:title, 'Расписание') %>
 <% if is_admin? %>
     <%= render 'shared/admin_timetable' %>
 <%else %>
     <%= render 'shared/customer_timetable' %>
 <% end %>
+<!-- -->
+
 
 

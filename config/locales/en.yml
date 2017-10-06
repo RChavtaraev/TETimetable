@@ -35,3 +35,6 @@ en:
                 too_short: "Пароль должен быть не короче 6 символов"
               password_confirmation:
                 confirmation: "Подтверждение не совпадает с паролем"
+              email:
+                taken: "Пользователь с таким email уже существует"
+                invalid: "неверный формат email"

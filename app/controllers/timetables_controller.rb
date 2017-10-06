@@ -42,45 +42,64 @@ class TimetablesController < ApplicationController
   end
 
   def new
-    #start_date_param = params.fetch(:start_date, Date.current)
-    start_time_param = params.fetch(:start_time, (Time.current + 1.hour).at_beginning_of_hour)
-    end_time_param = params.fetch(:end_time, start_time_param.to_time + 1.hour)
-    @timetable_item = Timetable.new( start_time: start_time_param.to_time,
-                                     end_time: end_time_param.to_time,
-                                     start_date:  start_time_param.to_date,
-                                    duration: Timetable.GetDuration(start_time_param.to_time, end_time_param.to_time))
+    if is_admin?
+      start_time_param = params.fetch(:start_time, (Time.current + 1.hour).at_beginning_of_hour)
+      end_time_param = params.fetch(:end_time, start_time_param.to_time + 1.hour)
+      @timetable_item = Timetable.new( start_time: start_time_param.to_time,
+                                       end_time: end_time_param.to_time,
+                                       start_date:  start_time_param.to_date,
+                                      duration: Timetable.GetDuration(start_time_param.to_time, end_time_param.to_time))
+    else
+      flash[:danger] = "Ошибка доступа"
+      redirect_to root_url
+    end
   end
 
   def create
-    @timetable_item = Timetable.new(timetable_item_params)
-    @timetable_item.transaction do
-      dt = SetAttributes(@timetable_item)
-      if @timetable_item.save
-        redirect_to controller: 'timetables', action: 'editweek', start_date: dt #timetable_home_url
-      else
-        render 'new'
+    if is_admin?
+      @timetable_item = Timetable.new(timetable_item_params)
+      @timetable_item.transaction do
+        dt = SetAttributes(@timetable_item)
+        if @timetable_item.save
+          redirect_to controller: 'timetables', action: 'editweek', start_date: dt #timetable_home_url
+        else
+          render 'new'
+        end
       end
+    else
+      flash[:danger] = "Ошибка доступа"
+      render 'new'
     end
   end
 
   def edit
-    @timetable_item = Timetable.find(params[:id])
-    @timetable_item.start_date = @timetable_item.start_time.to_date
-    @timetable_item.duration = @timetable_item.GetDuration()
+    if is_admin?
+      @timetable_item = Timetable.find(params[:id])
+      @timetable_item.start_date = @timetable_item.start_time.to_date
+      @timetable_item.duration = @timetable_item.GetDuration()
+    else
+      flash[:danger] = "Ошибка доступа"
+      redirect_to root_url
+    end
   end
 
   def update
-    @timetable_item = Timetable.find(params[:id])
-    @timetable_item.transaction do
-      @timetable_item.assign_attributes(timetable_item_params)
-      SetAttributes(@timetable_item)
-      if @timetable_item.save
-        flash[:success] = "Данные сохранены"
-        redirect_to controller: 'timetables', action: 'editweek', start_date: @timetable_item.start_time.to_date
-      else
-        render 'edit'
-      end
+    if is_admin?
+      @timetable_item = Timetable.find(params[:id])
+      @timetable_item.transaction do
+        @timetable_item.assign_attributes(timetable_item_params)
+        SetAttributes(@timetable_item)
+        if @timetable_item.save
+          flash[:success] = "Данные сохранены"
+          redirect_to controller: 'timetables', action: 'editweek', start_date: @timetable_item.start_time.to_date
+        else
+          render 'edit'
+        end
 
+      end
+    else
+      flash[:danger] = "Ошибка доступа"
+      render 'edit'
     end
   end
 
@@ -96,56 +115,65 @@ class TimetablesController < ApplicationController
   end
 
   def editweek
-
+    if is_admin?
+      @timetables = Timetable.GetSessionsRange(params.fetch(:start_date, Date.current).to_date)
+      @places=Place.all.map { |place| [place.name, place.id] }
+    else
+      flash[:danger] = "Ошибка доступа"
+      redirect_to root_url
+    end
   end
 
   def check_uncheck
-    lastid = params[:lastid].to_i;
-    for i in 0..lastid
-      st = params["start_time_#{i}"]
-      if !st.nil?
-        et = params["end_time_#{i}"]
-        checked = params["session_checked_#{i}"]
-        placeid = params["place_#{i}"]
-        if checked.to_i == 1
-          session = Timetable.find_by(start_time: st, end_time: et)
+    if is_admin?
+      lastid = params[:lastid].to_i;
+      for i in 0..lastid
+        st = params["start_time_#{i}"]
+        if !st.nil?
+          et = params["end_time_#{i}"]
+          checked = params["session_checked_#{i}"]
+          placeid = params["place_#{i}"]
+          if checked.to_i == 1
+            session = Timetable.find_by(start_time: st, end_time: et)
 
-          if session.nil?
-          #if Timetable.where(start_time: st, end_time: et, place_id: placeid).empty?
-            session = Timetable.new(start_time: st, end_time: et, place_id: placeid)
-          end
-          session.place_id = placeid
-          session.duration = session.GetDuration()
-          session.start_date = st.to_date
-          session.save
-          #Timetable.find_or_create_by!(start_time: st, end_time: et, place_id: placeid, start_date: st.to_date, duration: Timetable.GetDuration(st, et))
-        else
-          session = Timetable.find_by(start_time: st, end_time: et)
-          if !session.nil?
-            session.delete
+            if session.nil?
+            #if Timetable.where(start_time: st, end_time: et, place_id: placeid).empty?
+              session = Timetable.new(start_time: st, end_time: et, place_id: placeid)
+            end
+            session.place_id = placeid
+            session.duration = session.GetDuration()
+            session.start_date = st.to_date
+            session.save
+            #Timetable.find_or_create_by!(start_time: st, end_time: et, place_id: placeid, start_date: st.to_date, duration: Timetable.GetDuration(st, et))
+          else
+            session = Timetable.find_by(start_time: st, end_time: et)
+            if !session.nil?
+              session.delete
+            end
           end
         end
       end
-    end
-    flash[:success] = "Данные сохранены"
-    redirect_to controller: 'timetables', action: 'editweek', start_date: params["start_date"]
-    return
-
-    st = params[:start_time]
-    et = params[:end_time]
-    checked = params[:session_checked]
-    if checked.to_i == 1
-      Timetable.find_or_create_by!(start_time: st, end_time: et)
-      #if !Timetable.exists?(start_time: st, end_time: et)
-      #  Timetable.new(start_time: st, end_time: et)
-      #end
+      flash[:success] = "Данные сохранены"
+      redirect_to controller: 'timetables', action: 'editweek', start_date: params["start_date"]
     else
-      session = Timetable.find_by(start_time: st, end_time: et)
-      if !session.nil?
-        session.delete
-      end
-      #Timetable.dele
+      flash[:danger] = "Ошибка доступа"
+      render 'editweek'
     end
+
+      #st = params[:start_time]
+      #et = params[:end_time]
+      #checked = params[:session_checked]
+      #if checked.to_i == 1
+        #Timetable.find_or_create_by!(start_time: st, end_time: et)
+
+      #else
+      #  session = Timetable.find_by(start_time: st, end_time: et)
+      #  if !session.nil?
+      #    session.delete
+      #  end
+
+      #end
+
   end
 
   private
