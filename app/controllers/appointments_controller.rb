@@ -42,25 +42,7 @@ class AppointmentsController < ApplicationController
     @settings = TimetableHelper.getSettings(@appointments, @first_time.to_date.beginning_of_week)
   end
 
-  def new
-    if !signed_in?
-      redirect_to controller: "sessions", action: "new"
-    else
-      start_time_param = params.fetch(:start_time, (Time.current + 1.hour).at_beginning_of_hour).to_time
-      end_time_param = params.fetch(:end_time, start_time_param.to_time + 1. hour).to_time
-      place_id_param = params.fetch(:place_id, 0)
-      @appointment = Appointment.new( start_time: start_time_param,
-                                      end_time: end_time_param,
-                                      place_id: place_id_param,
-                                      start_date:  start_time_param.to_date,
-                                      duration: Timetable.GetDuration(start_time_param, end_time_param))
-      if is_admin?
-        @appointment.customer = Customer.new()
-      else
-        @appointment.customer = current_user.customer
-      end
-    end
-  end
+
 
   def new_dialog
     if !signed_in?
@@ -129,22 +111,6 @@ class AppointmentsController < ApplicationController
         end
       end
     end
-  end
-
-  def edit
-    if !signed_in?
-      redirect_to controller: "sessions", action: "new"
-    else
-      @appointment = Appointment.find(params[:id])
-      if is_admin?
-        @appointment.customer = Customer.new() if @appointment.customer.nil?
-      else
-        @appointment.customer = current_user.customer
-      end
-      @appointment.start_date = @appointment.start_time.to_date
-      @appointment.duration = @appointment.GetDuration() #((@appointment.end_time.to_i - @appointment.start_time.to_i) / 60).to_i
-    end
-
   end
 
   def update
@@ -225,4 +191,38 @@ class AppointmentsController < ApplicationController
     params.require(:customer).permit(:id, :name, :phone, :email, :birth_date, :address)
   end
 
+  def new
+    if !signed_in?
+      redirect_to controller: "sessions", action: "new"
+    else
+      start_time_param = params.fetch(:start_time, (Time.current + 1.hour).at_beginning_of_hour).to_time
+      end_time_param = params.fetch(:end_time, start_time_param.to_time + 1. hour).to_time
+      place_id_param = params.fetch(:place_id, 0)
+      @appointment = Appointment.new( start_time: start_time_param,
+                                      end_time: end_time_param,
+                                      place_id: place_id_param,
+                                      start_date:  start_time_param.to_date,
+                                      duration: Timetable.GetDuration(start_time_param, end_time_param))
+      if is_admin?
+        @appointment.customer = Customer.new()
+      else
+        @appointment.customer = current_user.customer
+      end
+    end
+  end
+
+  def edit
+    if !signed_in?
+      redirect_to controller: "sessions", action: "new"
+    else
+      @appointment = Appointment.find(params[:id])
+      if is_admin?
+        @appointment.customer = Customer.new() if @appointment.customer.nil?
+      else
+        @appointment.customer = current_user.customer
+      end
+      @appointment.start_date = @appointment.start_time.to_date
+      @appointment.duration = @appointment.GetDuration() #((@appointment.end_time.to_i - @appointment.start_time.to_i) / 60).to_i
+    end
+  end
 end
