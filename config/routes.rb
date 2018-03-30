@@ -13,7 +13,7 @@ Rails.application.routes.draw do
   get "appointments/index", to: "appointments#index"
   get "appointments/new_dialog" => 'appointments#new_dialog', :as => :new_dialog
   get "appointments/:id/edit_dialog", to: 'appointments#edit_dialog' #, :as => :edit_dialog
-  #get 'timetables/home'
+
   get 'timetables/editweek', to: 'timetables#editweek'
   post 'timetables/appendranges', to: 'timetables#appendranges'
   post 'timetables/deleteevents', to: 'timetables#deleteevents'

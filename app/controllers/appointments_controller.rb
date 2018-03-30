@@ -191,6 +191,7 @@ class AppointmentsController < ApplicationController
     params.require(:customer).permit(:id, :name, :phone, :email, :birth_date, :address)
   end
 
+  <<-DOC
   def new
     if !signed_in?
       redirect_to controller: "sessions", action: "new"
@@ -225,4 +226,5 @@ class AppointmentsController < ApplicationController
       @appointment.duration = @appointment.GetDuration() #((@appointment.end_time.to_i - @appointment.start_time.to_i) / 60).to_i
     end
   end
+  DOC
 end
