@@ -1,0 +1,49 @@
+<script type="application/javascript">
+  var initialized = false;
+  $( document ).ajaxError(function(evt, xhr){
+    errors = xhr.responseJSON.errors;
+    $('#errors').empty();
+    $('#error_explanation').show();
+    for (message in errors) {
+      $('#errors').append('<li>' + errors[message] + '</li>');
+    };
+    //alert("Error--");
+  });
+
+  $( document).ready(function(){
+    if (!initialized) {
+      init();
+      initialized = true;
+    }
+  });
+</script>
+<script type="application/javascript"  data-turbolinks-eval="false">
+  $( document ).on('turbolinks:load', function() {
+    if (!initialized) {
+      init();
+      initialized = true;
+    }
+  })
+</script>
+<%= stylesheet_link_tag params[:controller] %>
+<% if is_admin? %>
+    <%= stylesheet_link_tag "appointments_admin" %>
+<%else %>
+    <%= stylesheet_link_tag "appointments_customer" %>
+<% end %>
+
+<%= javascript_include_tag "appointment.js" %>
+
+<div id="edit_modal-window" class="modal fade" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
+<div id="new_modal-window" class="modal fade" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
+<div id="customerinfo_modal-window" class="modal fade" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
+
+<% provide(:title, 'Расписание') %>
+<%= render 'shared/timetable_grid', settings: @settings %>
+<div class="timetable">
+  <% if is_admin? %>
+      <%= render 'admin_appointments' %>
+  <%else %>
+      <%= render 'customer_appointments' %>
+  <% end %>
+</div>

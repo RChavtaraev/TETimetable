@@ -21,7 +21,7 @@
                 <%= render 'shared/customer_additional_fields', f:customer_fields %>
               </div>
           <% end %>
-          <%= render 'appointment_fields', f: f %>
+          <%= render 'appointment_fields', f: f, is_admin: is_admin? %>
         </div>
         <div class="modal-footer">
           <button class="btn" data-dismiss="modal" aria-hidden="true">Отмена</button>

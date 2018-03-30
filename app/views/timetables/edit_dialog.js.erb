@@ -1,0 +1,10 @@
+$("#edit_modal-window").html("<%= escape_javascript(render 'timetables/edit_dialog') %>");
+$( document ).ajaxError(function(evt, xhr){
+  errors = xhr.responseJSON.errors;
+  $('#errors').empty();
+  $('#error_explanation').show();
+  for (message in errors) {
+    $('#errors').append('<li>' + errors[message] + '</li>');
+  };
+  //alert("Error--");
+});

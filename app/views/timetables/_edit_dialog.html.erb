@@ -1,0 +1,25 @@
+<div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+      <h3 id="myModalLabel">Редактирование элемента расписания</h3>
+    </div>
+    <%= form_for(@timetable_item, remote: true) do |f| %>
+        <div class="modal-body ui-front">
+          <!--class ui-front необходим, чтобы работал autocomlete в модальном окне -->
+
+          <div id="error_explanation" style="display:none;">
+            <strong>Ошибки при изменении элемента расписания:</strong>
+            <ul id="errors"></ul>
+          </div>
+          <%= render 'timetable_fields', f: f %>
+        </div>
+        <div class="modal-footer">
+          <button class="btn" data-dismiss="modal" aria-hidden="true">Отмена</button>
+          <%= f.submit "Изменить", class: "btn btn-large btn-primary" %>
+          <%= link_to "Удалить", @timetable_item, method: :delete, class: "btn btn-large btn-primary",
+                      data: { confirm: "Удалить элемент расписания ?" } %>
+        </div>
+    <% end %>
+  </div>
+</div>

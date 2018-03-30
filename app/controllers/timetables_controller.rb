@@ -1,5 +1,8 @@
 class TimetablesController < ApplicationController
 
+  include ApplicationHelper
+  include TimetableHelper
+
   def home
     date = params.fetch(:start_date, Date.current).to_date
     first_date = date.beginning_of_week.to_date
@@ -37,6 +40,7 @@ class TimetablesController < ApplicationController
     @appointments.each do |appointment|
       @first_time = appointment.start_time if appointment.start_time < @first_time
     end
+    @settings = getSettings(@appointments, @first_time.to_date.beginning_of_week)
     #@appointments = Appointment.where("start_time::date >= ? AND end_time::date <= ?", first_data, last_data)
 
   end
@@ -83,7 +87,22 @@ class TimetablesController < ApplicationController
     end
   end
 
+  def edit_dialog
+    if is_admin?
+      @timetable_item = Timetable.find(params[:id])
+      @timetable_item.start_date = @timetable_item.start_time.to_date
+      @timetable_item.duration = @timetable_item.GetDuration()
+    end
+    respond_to do |format|
+      format.html
+      format.js
+    end
+  end
+
   def update
+    if !signed_in?
+      redirect_to controller: "sessions", action: "new"
+    end
     if is_admin?
       @timetable_item = Timetable.find(params[:id])
       @timetable_item.transaction do
@@ -93,7 +112,12 @@ class TimetablesController < ApplicationController
           flash[:success] = "Данные сохранены"
           redirect_to controller: 'timetables', action: 'editweek', start_date: @timetable_item.start_time.to_date
         else
-          render 'edit'
+          #render 'edit'
+          respond_to do |format|
+            #format.html
+            #format.js
+            format.json { render json: { errors: @timetable_item.errors.messages}, status: :unprocessable_entity } #:unprocessable_entity
+          end
         end
 
       end
@@ -116,7 +140,23 @@ class TimetablesController < ApplicationController
 
   def editweek
     if is_admin?
-      @timetables = Timetable.GetSessionsRange(params.fetch(:start_date, Date.current).to_date)
+      @startdate = params.fetch(:start_date, Date.current).to_date.beginning_of_week
+
+      @timetables = Timetable.GetSessionsRange(@startdate)
+
+      #@earler_hour = 9
+
+      #@latest_hour = 20;
+      #@timetables.each do |timetable|
+      #  @earler_hour = timetable[:start_time].hour if timetable[:start_time].hour < @earler_hour
+      #  @latest_hour = timetable[:end_time].hour if timetable[:end_time].hour > @latest_hour
+      #  @time_in_seconds = GetTime_Seconds(timetable[:start_time])
+
+
+      #end
+      #@earler_time_in_seconds = @earler_hour * 3600;
+
+      @settings = TimetableHelper.getSettings(@timetables, @startdate)
       @places=Place.all.map { |place| [place.name, place.id] }
     else
       flash[:danger] = "Ошибка доступа"
@@ -124,61 +164,138 @@ class TimetablesController < ApplicationController
     end
   end
 
-  def check_uncheck
-    if is_admin?
-      lastid = params[:lastid].to_i;
-      for i in 0..lastid
-        st = params["start_time_#{i}"]
-        if !st.nil?
-          et = params["end_time_#{i}"]
-          checked = params["session_checked_#{i}"]
-          placeid = params["place_#{i}"]
-          if checked.to_i == 1
-            session = Timetable.find_by(start_time: st, end_time: et)
+  #def check_uncheck
+  #  if is_admin?
+  #    events = {}
+  #    params.keys.each do |key|
+  #      info = key.split("_");
+  #      if info[0] == "place" || info[0] == "start-time" || info[0] == "end-time" || info[0] == "session-checked"
+  #        events[info[1]] = {} if events[info[1]].nil?
 
-            if session.nil?
-            #if Timetable.where(start_time: st, end_time: et, place_id: placeid).empty?
-              session = Timetable.new(start_time: st, end_time: et, place_id: placeid)
-            end
-            session.place_id = placeid
-            session.duration = session.GetDuration()
-            session.start_date = st.to_date
-            session.save
+#          events[info[1]][info[0]] = params[key]
+#        end
+
+#      end
+#      events.keys.each do |id|
+#        st = events[id]["start-time"]
+#        if !st.nil?
+#          et = events[id]["end-time"]
+#          checked = events[id]["session-checked"]
+#          placeid = events[id]["place"]
+#          if checked.to_i == 1
+#            session = Timetable.find_by(start_time: st, end_time: et)
+
+#            if session.nil?
+
+ #             session = Timetable.new(start_time: st, end_time: et, place_id: placeid)
+ #           end
+ #           session.place_id = placeid
+ #           session.duration = session.GetDuration()
+ #           session.start_date = st.to_date
+ #           session.save
             #Timetable.find_or_create_by!(start_time: st, end_time: et, place_id: placeid, start_date: st.to_date, duration: Timetable.GetDuration(st, et))
-          else
-            session = Timetable.find_by(start_time: st, end_time: et)
-            if !session.nil?
-              session.delete
-            end
-          end
+ #         else
+ #           session = Timetable.find_by(start_time: st, end_time: et)
+ #           if !session.nil?
+ #             session.delete
+ #           end
+ #         end
+ #       end
+
+ #    end
+ #    flash[:success] = "Данные сохранены"
+#      redirect_to controller: 'timetables', action: 'editweek', start_date: params["start_date"]
+#    else
+#      flash[:danger] = "Ошибка доступа"
+#      render 'editweek'
+#    end
+#  end
+
+  def appendranges #Create set of events by array of time ranges and interval (15, 30, 45, 60 min). Ajax using
+    ranges = JSON.parse params.fetch(:selectiondata)
+    interval = params.fetch(:interval).to_i #interval in minutes
+    places=Place.all.map { |place| [place.name, place.id] }
+    appendevents = []
+    errmsg = "нет доступного времени"
+    for range in ranges do
+      t1 = DateTime.parse(range['firstTime']).localtime
+      t2 = DateTime.parse(range['lastTime']).localtime
+      free_times = []
+      #get array of free times
+      events = Timetable.select("start_time, end_time").where("(start_time > :firsttime AND start_time < :lasttime) OR (end_time > :firsttime AND end_time < :lasttime)", {firsttime: t1, lasttime: t2}).to_a #get events in interval
+      settings = TimetableHelper.getSettings(events, Date.current)
+      t_cur = t1
+      for i in 0..events.length-1
+        free_times << {start_time: t_cur, end_time: events[i][:start_time]} if t_cur < events[i][:start_time]
+        t_cur = events[i][:end_time]
+        break if t_cur >= t2
+      end
+      free_times << {start_time: t_cur, end_time: t2} if (t_cur < t2)
+      for i in 0..free_times.length - 1 do
+        fullintervalCount = (free_times[i][:end_time] - free_times[i][:start_time]) / interval.minute
+        for j in 1..fullintervalCount.floor
+          st = free_times[i][:start_time] + ((j - 1)*interval).minute
+          et = free_times[i][:start_time] + (j*interval).minute
+          #create event
+          event = Timetable.new(
+              start_time: st.to_time,
+              end_time: et.to_time,
+              start_date:  st.to_date,
+              duration: Timetable.GetDuration(st.to_time, et.to_time),
+              place_id: range['placeId'])
+
+          res = event.save
+          html = render_to_string partial: 'timetables/event_element', locals: {timetable: event, settings:settings, places: places}, layout: false
+          appendevents << {html: html, start_time: st, end_time: et, placeid: range['placeId'], wday: st.to_date.cwday, id: event.id }
+          errmsg = ""
         end
       end
-      flash[:success] = "Данные сохранены"
-      redirect_to controller: 'timetables', action: 'editweek', start_date: params["start_date"]
-    else
-      flash[:danger] = "Ошибка доступа"
-      render 'editweek'
     end
+    respond_to do |format|
+      if errmsg = ""
+        format.json { render :json => {:success => true, :events => appendevents} }
+        format.html
+      else
+        format.json { render :json => {:success => false, :errormessage => errmsg} }
+        format.html
+      end
+    end
+  end
 
-      #st = params[:start_time]
-      #et = params[:end_time]
-      #checked = params[:session_checked]
-      #if checked.to_i == 1
-        #Timetable.find_or_create_by!(start_time: st, end_time: et)
+  def deleteevents #Delete set of events . Ajax using
+    eventids = (JSON.parse params.fetch(:eventids)).values
+    Timetable.delete(eventids)
+    respond_to do |format|
+      format.json { render :json => {:success => true} }
+      format.html
+    end
+  end
 
-      #else
-      #  session = Timetable.find_by(start_time: st, end_time: et)
-      #  if !session.nil?
-      #    session.delete
-      #  end
+  def changeplaces #set new place ids. Ajax using
+    if is_admin?
+      places = JSON.parse params.fetch(:places)
+      for obj in places.values do
+        event = Timetable.find(obj.keys[0])
+        if (!event.nil?)
+          event.place_id = obj[obj.keys[0]].to_i
+          event.duration = event.GetDuration()
+          event.start_date = event.start_time.to_date
+          b = event.save
 
-      #end
-
+        end
+      end
+      respond_to do |format|
+        format.json { render :json => {:success => true} }
+        format.html
+      end
+    end
   end
 
   private
   def timetable_item_params
     params.require(:timetable).permit(:start_time, :start_date, :duration, :place_id)
   end
+
+
 
 end

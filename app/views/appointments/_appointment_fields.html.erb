@@ -1,5 +1,9 @@
 <%= f.label :place_id, "Мед. центр:" %>
-<%= f.collection_select :place_id, Place.all, :id, :name, {}, {class: "form-control"} %>
+<%= f.collection_select :place_id, Place.all, :id, :name, {}, {class: "form-control", disabled: !is_admin} %>
+<% if !is_admin %>
+    <!-- hidden необходим для передачи параметра если select - disabled -->
+    <%= f.hidden_field :place_id %>
+<% end %>
 <table class="appointment-form">
   <tr>
     <td><%= f.label :start_date, "Дата:" %></td>
@@ -7,9 +11,9 @@
     <td><%= f.label :duration, "Длительность (мин):" %></td>
   </tr>
   <tr>
-    <td><%= f.date_field :start_date, class: "form-control" %></td>
-    <td><%= f.time_field :start_time, class: "form-control" %></td>
-    <td> <%= f.number_field :duration, in: 15...121, class: "form-control" %></td>
+    <td><%= f.date_field :start_date, class: "form-control", readonly: !is_admin %></td>
+    <td><%= f.time_field :start_time, class: "form-control", readonly: !is_admin %></td>
+    <td> <%= f.number_field :duration, in: 15...121, step: 15, class: "form-control", readonly: !is_admin %></td>
 
   </tr>
 </table>

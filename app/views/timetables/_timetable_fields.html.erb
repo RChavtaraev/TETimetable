@@ -9,7 +9,7 @@
   <tr>
     <td><%= f.date_field :start_date, class: "form-control" %></td>
     <td><%= f.time_field :start_time, class: "form-control" %></td>
-    <td> <%= f.number_field :duration, in: 15...121, class: "form-control" %></td>
+    <td> <%= f.number_field :duration, in: 15...121, step: 15, class: "form-control" %></td>
 
   </tr>
 </table>

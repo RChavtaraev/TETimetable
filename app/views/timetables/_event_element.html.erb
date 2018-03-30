@@ -1,0 +1,44 @@
+<%
+  @disable_controls = timetable.start_time.to_date < Date.current.to_date
+  @int_id = 0
+
+%>
+
+<div style="height: <%= (timetable.end_time -  timetable.start_time) * settings[:pixel_per_second] - 1 %>px; top: <%= (GetTime_Seconds(timetable.start_time) - settings[:earler_time_in_seconds]) * settings[:pixel_per_second]  %>px; "
+     data-td="<%= timetable.start_time.to_date.cwday - 1%>;<%= (GetTime_Seconds(timetable[:start_time]) - settings[:earler_time_in_seconds]) / (15*60)%>"
+     data-id="<%= timetable.id%>"
+     data-starttime = "<%= timetable.start_time %>"
+     class="timetable-element
+            <%= "timetable-element-min" if (timetable.end_time -  timetable.start_time) < 25*60 %>
+            <% if timetable.id.nil? %>
+              <%= 'panel-danger' %>
+            <% else %>
+              <%= 'panel-success' %>
+            <%end %>" >
+  <div class="panel-heading">
+    <% if @disable_controls %>
+        <strong><%=timetable.start_time.strftime("%H:%M")%> - <%=timetable.end_time.strftime("%H:%M")%> </strong>
+    <% else %>
+        <!--<% if timetable.id.nil? %>
+            <a href="/timetables/new?start_time=<%=timetable.start_time %>&end_time=<%=timetable.end_time %>" >
+        <% else %>
+            <a href="/timetables/<%=timetable.id %>/edit" >
+        <% end %>
+        <strong><%=timetable.start_time.strftime("%H:%M")%> - <%=timetable.end_time.strftime("%H:%M")%></strong>
+        </a> -->
+
+          <%= link_to "/timetables/#{timetable.id}/edit_dialog",
+                      html_options = {:title =>"Редактировать элемент расписания", :remote => true, 'data-toggle' =>  "modal", 'data-target' => '#edit_modal-window', 'data-backdrop' => "static"} do %>
+              <strong><%=timetable.start_time.strftime("%H:%M")%> - <%=timetable.end_time.strftime("%H:%M")%></strong>
+          <% end %>
+        <a class="btn btn-danger btn-circle-micro btn-delete-event" onclick="deleteEventAjax(<%=timetable.id %>)" title="Удалить элемент расписания" >
+          <i class="glyphicon glyphicon-remove"></i>
+        </a>
+        <%= hidden_field_tag "start-time_#{timetable.id}", value=timetable.start_time %>
+        <%= hidden_field_tag "end-time_#{timetable.id}", value=timetable.end_time %>
+    <% end %>
+
+    <%= select_tag "place_#{timetable.id}", options_for_select(places, timetable.place_id), {onchange: "changePlace(#{timetable.id},this);", disabled: @disable_controls} %>
+
+  </div>
+</div>

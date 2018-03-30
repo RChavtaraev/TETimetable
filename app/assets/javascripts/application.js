@@ -18,6 +18,6 @@
 //= require autocomplete-rails
 //= require bootstrap-sprockets
 //= require bootstrap/modal
-//= require_tree .
+//= require_tree ./common
 
 

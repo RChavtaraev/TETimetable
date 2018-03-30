@@ -1,3 +1,279 @@
 // Place all the styles related to the Appointments controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+.timetable {
+  width: 1120px;
+}
+
+.timetable-day-body {
+  position: relative;
+}
+
+.table td.day {
+  width: 160px;
+  padding: 8px 2px;
+  background-color: transparent;
+}
+
+.appointment-element {
+  border: solid 1px black;
+  border-radius: 5px;
+  position: absolute;
+  overflow: hidden;
+  width: 159px;
+  margin-top: 0px;
+  z-index: 101;
+}
+
+.timetable-grid {
+  position: absolute;
+  width: 1120px;
+
+  z-index: 100;
+
+  tr{
+    height: 27px;
+  };
+
+  td {
+    padding: 0px;
+  }
+
+  td.selected {
+    background-color: lightblue;
+  }
+  td.disabled {
+    background-color: lightgrey;
+  }
+}
+
+.timetable-grid-time {
+
+  margin-left: -50px;
+  margin-top: -20px;
+}
+
+.timetable-grid-lasttime {
+  margin-left: -50px;
+  position: relative;
+  height: 0px;
+  top: 10px;
+}
+
+.timetable-grid-hour-tr {
+  border-top: 2px solid grey;
+}
+
+.panel-success > .panel-heading {
+  height: 100%;
+  padding: 5px;
+  .appointment-time {
+    padding-left: 25px;
+  }
+  .appointment-place {
+    padding-left: 25px;
+  }
+}
+
+.panel-success.min > .panel-heading {
+  height: 100%;
+  padding: 1px 3px;
+
+  .appointment-time {
+    top: 0px;
+    font-size: 10px;
+    padding-left: 15px;
+  }
+
+  .appointment-place {
+    top: 12px;
+    font-size: 10px;
+    padding-left: 15px;
+  }
+}
+
+.panel-danger > .panel-heading {
+  height: 100%;
+  padding: 0px;
+  .appointment-time {
+    //padding-left: 25px;
+  }
+  .appointment-place {
+    top: 25px;
+  }
+}
+
+.panel-danger.min > .panel-heading {
+  height: 100%;
+  padding: 1px 3px;
+
+  .appointment-time {
+    top: 0px;
+    font-size: 10px;
+    padding-left: 0px;
+  }
+
+  .appointment-place {
+    top: 12px;
+    font-size: 10px;
+    padding-left: 0px;
+  }
+}
+
+.panel-info.mid > .panel-heading {
+  height: 27px;
+
+  .appointment-time {
+    font-size: 12px;
+    top: 0px;
+  }
+
+  .appointment-place {
+    font-size: 12px;
+    top: 12px;
+  }
+
+  .del-btn-circle{
+    top: 3px;
+  }
+
+}
+
+.panel-info.mid {
+  .customer-name {
+    font-size: 11px;
+    padding: 0px 5px;
+    margin-top: -2px;
+  }
+  .customer-phone {
+    font-size: 10px;
+    margin-top: -2px;
+  }
+}
+
+.panel-info.min > .panel-heading {
+
+  height: 12px;
+  .appointment-time {
+    font-size: 10px;
+    margin-left: -2px;
+    top: 0px;
+    width:95px;
+  }
+
+  .appointment-place {
+    font-size: 10px;
+    top: 0px;
+    padding-right: 0px;
+    margin-left: 55px;
+    width: 75px;
+  }
+
+  .del-btn-circle{
+    top: 2px;
+    right:  -2px;
+  }
+}
+
+.panel-info.min {
+  overflow: visible;
+  z-index: 105;
+  .customer-name {
+    font-size: 10px;
+    padding: 0px 3px;
+    margin-left: 10px;
+
+  }
+
+  .customer-phone {
+    font-size: 12px;
+    margin-top: 0px;
+    background-color: white;
+  }
+
+  .phone-expander:after {
+    position: absolute;
+    top: 12px;
+    font-family:'Glyphicons Halflings';
+    content:"\e253";
+    color: grey;
+    font-size: 10px;
+  }
+
+  .phone-expander.collapsed:after {
+    content:"\e252";
+  }
+}
+
+.panel-info {
+
+  .appointment-time {
+    text-align: left;
+  }
+
+  .appointment-place {
+    text-align: right;
+  }
+
+  .customer-name {
+    font-weight: bold;
+    padding: 1px 5px;
+
+  }
+  .customer-phone{
+    font-weight: bold;
+    padding: 0px 5px;
+    text-align: right;
+  }
+}
+
+.panel-info > .panel-heading {
+  padding: 5px;
+  height: 40px;
+
+  .appointment-time {
+    padding-right: 30px;
+    top: 3px;
+  }
+  .appointment-place {
+    padding-right: 35px;
+    top: 20px;
+  }
+
+  .del-btn-circle {
+    position: absolute;
+    right: 0px;
+    top: 5px;
+  }
+}
+
+.appointment-time {
+  position: absolute;
+  width: 100%;
+  top: 5px;
+  width: 100%;
+
+  text-align: center;
+}
+
+.appointment-place {
+  position: absolute;
+  top: 32px;
+  width: 100%;
+
+  text-align: center;
+}
+
+.insert-appointment {
+  position: absolute;
+  z-index: 101;
+  margin-left: 4px;
+  margin-top: 4px;
+  left: 0px;
+  opacity: 0.8;
+}
+
+
+
+
+

@@ -2,23 +2,25 @@
 <% provide(:title, 'Редактирование расписания') %>
 
 <script type="application/javascript">
-  var changed = false;
+  //var changed = false;
   var initialized = false;
 
   function day_places_change(source){
-    ids = source.id.split('_');
+    selects = source.closest("td").querySelectorAll(".timetable-element select");
 
-    for (i = ids[1]; i <=  ids[2]; i++ ){
-      $('#place_'+i).val(source.value).change();
+    for(i=0; i<selects.length;i++ ){
+      selects[i].value = source.value;
     }
+
     changed = true;
     $("[name='commit']").removeAttr('disabled');
   }
 
-  function day_checked_change (source) {
+  /*function day_checked_change (source) {
     ids = source.id.split('_');
     for (i = ids[1]; i <=  ids[2]; i++ ){
       $('#session_checked_'+i)[0].checked = source.checked;
+      session_check_change($('#session_checked_'+i)[0]);
     }
     changed = true;
     $("[name='commit']").removeAttr('disabled');
@@ -29,116 +31,76 @@
     $("[name='commit']").removeAttr('disabled');
   }
 
+  function session_check_change(source) {
+    if (source.checked) {
+      $(source).closest("div.panel").removeClass("panel-danger").addClass("panel-success");
+    }
+    else {
+      $(source).closest("div.panel").removeClass("panel-success").addClass("panel-danger");
+    };
+    changed = true;
+    $("[name='commit']").removeAttr('disabled');
+  }
+
   function form_submit() {
     changed = false;
-  }
+  }*/
+
+
 
   $( document).ready(function(){
     changed = false;
     if (!initialized) {
-      $(window).bind("beforeunload", function (event) {
-        if (changed) {
-          event.returnValue = "Изменения на странице не сохранены. Покинуть страницу?";
-          changed = !event.returnValue;
-          return event.returnValue;
-        }
-      });
-
-      // Turbolinks 4 and 5
-      $(document).on("page:before-change turbolinks:before-visit", function () {
-        if (changed) {
-          changed = !confirm("Изменения на странице не сохранены. Покинуть страницу?");
-          return !changed
-        }
-      });
+      init(document.getElementById("addEventsBtn"));
       initialized = true;
     }
-  })
-
+  });
 </script>
 
 <script type="application/javascript"  data-turbolinks-eval="false">
   $( document ).on('turbolinks:load', function() {
-
-    changed = false;
     if (!initialized) {
-
-      //$(document).on("page:before-change turbolinks:load", function() {
-      //  changed = false;
-
-      //});
-      if (!initialized) {
-        $(window).bind("beforeunload", function (event) {
-          if (changed) {
-            event.returnValue = "Изменения на странице не сохранены. Покинуть страницу?";
-            changed = !event.returnValue;
-            return event.returnValue;
-          }
-        });
-
-        // Turbolinks 4 and 5
-        $(document).on("page:before-change turbolinks:before-visit", function () {
-          if (changed) {
-            changed = !confirm("Изменения на странице не сохранены. Покинуть страницу?");
-            return !changed
-          }
-        });
-        initialized = true;
-      }
+      init(document.getElementById("addEventsBtn"));
+      initialized = true;
     }
-
-
   })
-
 </script>
-
+<%= stylesheet_link_tag params[:controller] %>
+<%= javascript_include_tag "timetable.js" %>
+<div id="edit_modal-window" class="modal fade" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
 <div>
-  <% @timetables = Timetable.GetSessionsRange(params.fetch(:start_date, Date.current).to_date) %>
-  <% @places=Place.all.map { |place| [place.name, place.id] } %>
-  <% @int_id = 0 %>
-  <%= form_tag 'check_uncheck', onsubmit: "form_submit();" do %>
-    <%= submit_tag("Применить",{class: "btn btn-large btn-primary"})  %>
-    <%= week_calendar events: @timetables do |date, timetables| %>
-        <% @disable_controls = date.to_date < Date.current.to_date %>
-        <%= select_tag "placegroup_#{@int_id}_#{@int_id+timetables.count-1}", options_for_select(@places),  {class: "form-control", onchange: "day_places_change(this);", disabled: @disable_controls }  %>
-        <%= check_box_tag "checkedgroup_#{@int_id}_#{@int_id+timetables.count-1}", value = '1', checked = false, {onchange: "day_checked_change(this);", disabled: @disable_controls} %>
-        <% @last_end_time = Time.now.to_time %>
-        <% timetables.each do |timetable| %>
-            <div style="border: solid 1px black" class="panel panel-info" >
-              <div class="panel-heading">
-                <div class="row">
-                  <div class="pull-left">
-                      <% if @disable_controls %>
-                        <strong><%=timetable.start_time.strftime("%H:%M")%> - <%=timetable.end_time.strftime("%H:%M")%></strong>
-                      <% else %>
-                        <% if timetable.id.nil? %>
-                          <a href="/timetables/new?start_time=<%=timetable.start_time %>&end_time=<%=timetable.end_time %>" >
-                        <% else %>
-                          <a href="/timetables/<%=timetable.id %>/edit" >
-                        <% end %>
-                        <strong><%=timetable.start_time.strftime("%H:%M")%> - <%=timetable.end_time.strftime("%H:%M")%></strong>
-                        </a>
-                        <%= hidden_field_tag "start_time_#{@int_id}", value=timetable.start_time %>
-                        <%= hidden_field_tag "end_time_#{@int_id}", value=timetable.end_time %>
-                      <% end %>
-
-                      <%= select_tag "place_#{@int_id}", options_for_select(@places, timetable.place_id), {onchange: "session_change(this);", disabled: @disable_controls} %>
-                      <%= check_box_tag "session_checked_#{@int_id}", value = '1', checked = !timetable.id.nil?, {onchange: "session_change(this);", disabled: @disable_controls}  %>
-                      <% @int_id += 1 %>
-                      <% @last_end_time = timetable.end_time %>
-                  </div>
-                </div>
-              </div>
-            </div>
-        <% end %>
-        <% if date.to_date >= Date.current.to_date %>
-            <a class="btn btn-success btn-circle" href="/timetables/new?start_date=<%= date.to_date %>&start_time=<%= @last_end_time.to_time %>" title="Добавить элемент расписания" >
-              <i class="glyphicon glyphicon-plus"></i>
+    <div>
+      <div class="timetable" >
+        <div id="addEventsBtn" class="addeventsbtn">
+          <a class="btn btn-success btn-circle-min" onclick="appendrangesAjax()" title="Добавить элемент расписания" >
+            <i class="glyphicon glyphicon-plus"></i>
+          </a>
+          <div class="eventsinterval panel">
+            <span>Интервал:</span>
+            <ul>
+              <li><input type="radio" name="interval" value="1"><span>15 мин</span></li>
+              <li><input type="radio" name="interval" value="2"><span>30 мин</span></li>
+              <li><input type="radio" name="interval" value="3"><span>45 мин</span></li>
+              <li><input type="radio" name="interval" value="4"><span>1 час</span></li>
+            </ul>
+          </div>
+        </div>
+        <%= render 'shared/timetable_grid', settings: @settings %>
+        <%= week_calendar events: @timetables do |date, timetables| %>
+          <% @disable_controls = date.to_date < Date.current.to_date %>
+          <div class="timetable-day-header" data-wday="<%= date.to_date.cwday  %>">
+            <%= select_tag "placegroup", options_for_select(@places),  {class: "form-control day", onchange: "changePlaces(this);", disabled: @disable_controls }  %>
+            <a class="btn btn-danger btn-circle-micro btn-delete-events" onclick="deleteDayEvents(this)" title="Удалить все элементы расписания за день" >
+              <i class="glyphicon glyphicon-remove"></i>
             </a>
+          </div>
+          <% @last_end_time = Time.now.to_time %>
+          <div class="timetable-day-body wday-<%= date.to_date.cwday%>" style="height: <%= (@settings[:latest_hour]-@settings[:earler_hour]) * @settings[:pixel_per_hour] %>px;" >
+          <% timetables.each do |timetable| %>
+                <%= render 'event_element', timetable: timetable, settings:@settings, places: @places %>
+          <% end %>
+          </div>
         <% end %>
-    <% end %>
-
-    <%= hidden_field_tag("lastid", @int_id) %>
-    <%= submit_tag("Применить", {class: "btn btn-large btn-primary"})  %>
-  <% end %>
+      </div>
+    </div>
 </div>

@@ -1,0 +1,24 @@
+<table class="timetable-grid table table-bordered " data-earlertime="<%= settings[:earler_time_in_seconds] %>" >
+  <% @lastRowIndex =  (settings[:latest_hour]-settings[:earler_hour])*4 - 1 %>
+  <% for i in 0..@lastRowIndex %>
+      <tr class = "<%= "timetable-grid-hour-tr" if i % 4 == 0 %>">
+        <td class="timetable-grid-td" data-eventtime="<%= settings[:startdate] + settings[:earler_hour].hour + (i * 15).minute  %>" data-canselected="<%= "true" if Time.current <= (settings[:startdate] + settings[:earler_hour].hour + (i * 15).minute) %>">
+          <% if i % 2 == 0
+               @gridtime = "#{settings[:earler_hour] + i / 4}.00"
+               @gridtime = "#{settings[:earler_hour] + i / 4}.30" if i % 4 > 0
+          %>
+              <div class="timetable-grid-time"><%= @gridtime %></div>
+
+          <% end %>
+          <% if i == @lastRowIndex
+               @gridtime = "#{settings[:earler_hour] + i / 4 + 1}.00"
+          %>
+              <div class="timetable-grid-lasttime"><%= @gridtime %></div>
+          <% end %>
+        </td>
+        <% for j in 1..6 %>
+            <td class="timetable-grid-td" data-eventtime="<%= settings[:startdate] + j.day + settings[:earler_hour].hour + (i * 15).minute  %>" data-canselected="<%= "true" if Time.current <= (settings[:startdate] + j.day + settings[:earler_hour].hour + (i * 15).minute) %>"></td>
+        <% end %>
+      </tr>
+  <% end %>
+</table>

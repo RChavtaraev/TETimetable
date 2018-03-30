@@ -2,6 +2,46 @@ class AppointmentsController < ApplicationController
 
   autocomplete :customer, :name, :extra_data => [:phone, :address, :birth_date, :email, :comment]
 
+  def index
+    date = params.fetch(:start_date, Date.current).to_date
+    first_date = date.beginning_of_week.to_date
+    sql_first_date = ActiveRecord::Base.sanitize(first_date)
+    last_date = date.end_of_week.to_date
+    sql_last_date = ActiveRecord::Base.sanitize(last_date)
+    sql_current_date = ActiveRecord::Base.sanitize(Time.current.to_date)
+    sql ="SELECT Apt.id, 1 AS status, start_time, end_time, place_id, customer_id, C.Name AS customer_name, C.phone AS customer_phone, places.name AS place_name
+    FROM appointments AS Apt
+    INNER JOIN customers as C ON C.id = customer_id
+    INNER JOIN places ON places.id = place_id
+    WHERE start_time::date >= #{sql_first_date} AND start_time::date <= #{sql_last_date}
+    UNION
+    SELECT -1 as id, 0 AS status, start_time, end_time, place_id, -1 as customer_id, '' as customer_name, '' AS customer_phone, places.name AS place_name
+    FROM timetables AS T1
+    INNER JOIN places ON places.id = place_id
+    WHERE
+          T1.start_time::date >= #{sql_first_date} AND
+          T1.start_time::date <= #{sql_last_date} AND
+    NOT EXISTS (
+                   SELECT Id
+    FROM appointments AS Apt
+    WHERE Apt.start_time::date >= #{sql_first_date} AND Apt.start_time::date <= #{sql_last_date} AND
+    ((T1.start_time <= Apt.start_time AND T1.end_time >= Apt.end_time) OR
+    (T1.start_time <= Apt.start_time AND T1.end_time >= Apt.end_time) OR
+    (T1.start_time < Apt.end_time AND T1.end_time > Apt.start_time) OR
+    (T1.start_time < Apt.start_time AND T1.end_time > Apt.start_time) OR
+    (T1.start_time >= Apt.start_time AND T1.end_time <= Apt.end_time))
+
+    )
+    ORDER BY start_time"
+
+    @appointments = Appointment.find_by_sql(sql)
+    @first_time = date.end_of_week.to_date + 1.day
+    @appointments.each do |appointment|
+      @first_time = appointment.start_time if appointment.start_time < @first_time
+    end
+    @settings = TimetableHelper.getSettings(@appointments, @first_time.to_date.beginning_of_week)
+  end
+
   def new
     if !signed_in?
       redirect_to controller: "sessions", action: "new"
@@ -78,7 +118,7 @@ class AppointmentsController < ApplicationController
       @appointment.transaction do
         dt = SetAttributes(@appointment)
         if @appointment.save
-         redirect_to controller: 'timetables', action: 'home', start_date: dt #timetable_home_url
+         redirect_to controller: 'appointments', action: 'index', start_date: dt #timetable_home_url
          return
         else
           respond_to do |format|
@@ -117,7 +157,7 @@ class AppointmentsController < ApplicationController
         dt = SetAttributes(@appointment)
         if @appointment.save
           flash[:success] = "Данные сохранены"
-          redirect_to controller: 'timetables', action: 'home', start_date: dt.at_beginning_of_week #timetable_home_url
+          redirect_to controller: 'appointments', action: 'index', start_date: dt.at_beginning_of_week #timetable_home_url
           return
         else
           respond_to do |format|
@@ -168,7 +208,7 @@ class AppointmentsController < ApplicationController
       if is_admin? || @appointment.customer.id == current_user.customer.id
         dt = @appointment.start_time
         @appointment.destroy
-        redirect_to controller: 'timetables', action: 'home', start_date: dt
+        redirect_to controller: 'appointments', action: 'index', start_date: dt
       else
         flash[:danger] = "Ошибка доступа"
       end

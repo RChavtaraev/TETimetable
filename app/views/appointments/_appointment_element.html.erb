@@ -1,0 +1,77 @@
+<% @duration =  (appointment.end_time - appointment.start_time)/60 %>
+<% if appointment.id >= 0 %>
+    <div style="height: <%= (appointment.end_time -  appointment.start_time) * settings[:pixel_per_second] - 1 %>px; top: <%= (GetTime_Seconds(appointment.start_time) - settings[:earler_time_in_seconds]) * settings[:pixel_per_second]  %>px; "
+         data-td="<%= appointment.start_time.to_date.cwday - 1%>;<%= (GetTime_Seconds(appointment.start_time) - settings[:earler_time_in_seconds]) / (15*60)%>"
+         data-id="<%= appointment.id%>"
+         data-starttime = "<%= appointment.start_time %>"
+      class="panel panel-info <%= "mid" if @duration <= 30 && @duration > 25 %> <%= "min" if @duration <= 25 %> appointment-element">
+      <div class="panel-heading">
+          <div class="appointment-time">
+            <%= link_to "/appointments/#{appointment.id}/edit_dialog",
+                        html_options = {:title =>"Редактировать запись", :remote => true, 'data-toggle' =>  "modal", 'data-target' => '#edit_modal-window', 'data-backdrop' => "static"} do %>
+                <strong><%=appointment.start_time.strftime("%H:%M")%> - <%=appointment.end_time.strftime("%H:%M")%></strong>
+            <% end %>
+          </div>
+          <div class="appointment-place">
+            <span><%=appointment.place_name %></span>
+          </div>
+          <% if Time.current < appointment.start_time %>
+                <%= link_to appointment, method: :delete,
+                            data: { confirm: "Удалить запись от #{appointment.start_time.strftime("%d.%m %H:%M")} для #{appointment.customer_name} ?" },
+                            title: "Удаление записи", class: "btn btn-danger del-btn-circle" do  %>
+                    <i class="glyphicon glyphicon-remove"></i>
+                <% end %>
+          <% end %>
+      </div>
+      <div class="customer-name" >
+        <%= link_to "/customers/#{appointment.customer_id}/info_dialog",
+                    html_options = {:title =>"Информация о пациенте", :remote => true, 'data-toggle' =>  "modal", 'data-target' => '#customerinfo_modal-window', 'data-backdrop' => "static"} do %>
+            <%=appointment.customer_name%>
+        <% end %>
+        <!--<a href="/customers/<%=appointment.customer_id %>/edit" >
+          <%=appointment.customer_name%>
+        </a>-->
+      </div>
+      <% if @duration <= 25 %>
+          <a href="#customerphone<%= appointment.id %>" data-toggle="collapse" class="phone-expander collapsed"></a>
+          <div id="customerphone<%= appointment.id %>" class="collapse">
+      <% end %>
+      <div class="customer-phone" >
+        <%=  appointment.customer_phone%>
+      </div>
+      <% if @duration <= 25 %>
+          </div>
+      <% end %>
+    </div>
+<% else %>
+    <% if Time.current < appointment.start_time %>
+        <!--<div style="height: <%= (appointment.end_time -  appointment.start_time) * settings[:pixel_per_second] - 1 %>px; top: <%= (GetTime_Seconds(appointment.start_time) - settings[:earler_time_in_seconds]) * settings[:pixel_per_second]  %>px; "
+             data-td="<%= appointment.start_time.to_date.cwday - 1%>;<%= (GetTime_Seconds(appointment.start_time) - settings[:earler_time_in_seconds]) / (15*60)%>"
+             data-starttime = "<%= appointment.start_time %>"
+          class="panel panel-success <%= "min" if @duration <= 25 %> appointment-element">
+
+          <div class="panel-heading">
+
+                <div class="appointment-time">
+                  <strong><%=appointment.start_time.strftime("%H:%M")%> - <%=appointment.end_time.strftime("%H:%M")%></strong>
+                </div>
+                <div class="appointment-place">
+                  <span><%=appointment.place_name %> </span>
+                </div>
+            <%= link_to "/appointments/new_dialog?start_time=#{appointment.start_time}&end_time=#{appointment.end_time}&place_id=#{appointment.place_id}",
+                        html_options = {:class => "btn btn-success btn-circle" + (@duration <= 25? "-micro": "") ,:title =>"Добавить запись", :remote => true, 'data-toggle' =>  "modal", 'data-target' => '#new_modal-window', 'data-backdrop' => "static"} do %>
+                <i class="glyphicon glyphicon-plus"></i>
+            <% end %>
+          </div>
+        </div> -->
+    <% else %>
+        <!--<div style="height: <%= (appointment.end_time -  appointment.start_time) * settings[:pixel_per_second] - 1 %>px; top: <%= (GetTime_Seconds(appointment.start_time) - settings[:earler_time_in_seconds]) * settings[:pixel_per_second]  %>px; "
+             data-td="<%= appointment.start_time.to_date.cwday - 1%>;<%= (GetTime_Seconds(appointment.start_time) - settings[:earler_time_in_seconds]) / (15*60)%>"
+             data-starttime = "<%= appointment.start_time %>"
+          class="panel panel-danger appointment-element">
+          <div class="panel-heading">
+              <strong><%=appointment.start_time.strftime("%H:%M")%> - <%=appointment.end_time.strftime("%H:%M")%> - Недоступно</strong>
+          </div>
+        </div>-->
+    <% end %>
+<% end %>

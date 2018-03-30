@@ -83,7 +83,7 @@ class CustomersController < ApplicationController
   def index
     if is_admin?
       if params[:customer_name].nil?
-      @customers = Customer.paginate(page: params[:page], per_page: 20)
+      @customers = Customer.paginate(page: params[:page], per_page: 5)
       else
         @customers = Customer.where("name ILIKE ?", '%' + params[:customer_name] + '%').paginate(page: params[:page], per_page: 20)
       end
@@ -107,6 +107,23 @@ class CustomersController < ApplicationController
       end
       @appointments = @customer.appointments.paginate(page: params[:page])
       render 'edit'
+    end
+  end
+
+  def info_dialog
+    if !signed_in?
+      render :js => "window.location = '/sessions/new'"
+      return
+    else
+      if is_admin?
+        @customer = Customer.find(params[:id])
+      else
+        @customer = current_user.customer
+      end
+    end
+    respond_to do |format|
+      format.html
+      format.js
     end
   end
 

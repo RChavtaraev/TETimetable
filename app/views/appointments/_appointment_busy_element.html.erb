@@ -1,0 +1,15 @@
+<% @duration =  (appointment.end_time - appointment.start_time)/60 %>
+<div style="height: <%= (appointment.end_time -  appointment.start_time) * settings[:pixel_per_second] - 1 %>px; top: <%= (GetTime_Seconds(appointment.start_time) - settings[:earler_time_in_seconds]) * settings[:pixel_per_second]  %>px; "
+     data-td="<%= appointment.start_time.to_date.cwday - 1%>;<%= (GetTime_Seconds(appointment.start_time) - settings[:earler_time_in_seconds]) / (15*60)%>"
+     data-starttime = "<%= appointment.start_time %>"
+     class="panel panel-danger <%= "min" if @duration <= 25 %> appointment-element">
+  <div class="panel-heading">
+    <div class="appointment-time">
+      <strong><%=appointment.start_time.strftime("%H:%M")%> - <%=appointment.end_time.strftime("%H:%M")%></strong>
+    </div>
+    <div class="appointment-place">
+       <span>Недоступно</span>
+    </div>
+
+  </div>
+</div>

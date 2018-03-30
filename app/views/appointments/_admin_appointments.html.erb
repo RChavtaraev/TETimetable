@@ -1,0 +1,70 @@
+  <%= week_calendar events: @appointments do |date, appointments| %>
+      <% @last_end_time = nil #date.to_date + 9.hour %>
+
+      <% @last_place_id = 0 %>
+
+      <div class="timetable-day-body wday-<%= date.to_date.cwday%>" style="height: <%= (@settings[:latest_hour]-@settings[:earler_hour]) * @settings[:pixel_per_hour] %>px;" >
+        <% appointments.each do |appointment| %>
+            <% if appointment.id >= 0 %>
+                <%= render 'appointment_element', appointment: appointment, settings: @settings %>
+            <% else %>
+                <% if Time.current < appointment.start_time %>
+                    <%= render 'appointment_new_element', appointment: appointment, settings: @settings %>
+                <% else %>
+                    <%= render 'appointment_busy_element', appointment: appointment, settings: @settings %>
+                <% end %>
+            <% end %>
+
+            <%
+              if !(@last_end_time.nil?) &&
+                (appointment.start_time - @last_end_time)/60 >= 15
+
+                @td_idx= "#{appointment.start_time.to_date.cwday - 1};#{(GetTime_Seconds(@last_end_time) - @settings[:earler_time_in_seconds]) / (15*60)}"
+                @insert_duration = [(appointment.start_time - @last_end_time)/60, 60].min
+            %>
+                <%= link_to "/appointments/new_dialog?start_time=#{@last_end_time}&end_time=#{@last_end_time + @insert_duration * 60}&place_id=#{@last_place_id}",
+                            html_options = {:class => "btn btn-success btn-circle-micro insert-appointment",
+                                            :title =>"Добавить запись #{@last_end_time.strftime("%H:%M")} - #{(@last_end_time + @insert_duration * 60).strftime("%H:%M")}",
+                                            :remote => true,
+                                            'data-td' => @td_idx,
+                                            'data-toggle' =>  "modal",
+                                            'data-target' => '#new_modal-window',
+                                            'data-backdrop' => "static"} do %>
+                    <i class="glyphicon glyphicon-plus"></i>
+                <% end %>
+            <% end %>
+            <% @last_end_time = appointment.end_time %>
+            <% @last_place_id = appointment.place_id %>
+        <% end %>
+        <% if date.to_date >= Date.current.to_date %>
+          <%= link_to "/appointments/new_dialog?start_time=#{date.to_date + (@settings[:earler_hour] - 1).hour}&place_id=#{@last_place_id}",
+                      html_options = {:class => "btn btn-success btn-circle" ,
+                                      :title =>"Добавить запись #{(date.to_date + (@settings[:earler_hour] - 1).hour).strftime("%H:%M")} - #{(date.to_date + @settings[:earler_hour].hour).strftime("%H:%M")}",
+                                      :remote => true,
+                                      'data-toggle' =>  "modal",
+                                      'data-target' => '#new_modal-window',
+                                      'data-backdrop' => "static"} do %>
+              <i class="glyphicon glyphicon-plus"></i>
+          <% end %>
+        <% end %>
+        <% if  !(@last_end_time.nil?)
+           @insert_duration = 60
+          @td_idx = "#{date.to_date.cwday - 1};#{(GetTime_Seconds(@last_end_time) - @settings[:earler_time_in_seconds]) / (15*60)}" %>
+          <%= link_to "/appointments/new_dialog?start_time=#{@last_end_time}&end_time=#{@last_end_time + @insert_duration * 60}&place_id=#{@last_place_id}",
+                      html_options = {:class => "btn btn-success btn-circle insert-appointment",
+                                      :title =>"Добавить запись #{@last_end_time.strftime("%H:%M")} - #{(@last_end_time + @insert_duration * 60).strftime("%H:%M")}",
+                                      :remote => true,
+                                      'data-td' => @td_idx,
+                                      'data-toggle' =>  "modal",
+                                      'data-target' => '#new_modal-window',
+                                      'data-backdrop' => "static"} do %>
+              <i class="glyphicon glyphicon-plus"></i>
+          <% end %>
+        <% end %>
+
+      </div>
+  <% end %>
+
+
+
+

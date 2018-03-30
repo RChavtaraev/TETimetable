@@ -9,3 +9,11 @@ Rails.application.config.assets.version = '1.0'
 # Precompile additional assets.
 # application.js, application.css, and all non-JS/CSS in app/assets folder are already added.
 # Rails.application.config.assets.precompile += %w( search.js )
+Rails.application.config.assets.precompile += %w( appointments.css )
+Rails.application.config.assets.precompile += %w( appointment.js )
+Rails.application.config.assets.precompile += %w( timetables.css )
+Rails.application.config.assets.precompile += %w( timetable.js )
+
+Rails.application.config.assets.precompile += %w( appointments_admin.scss )
+Rails.application.config.assets.precompile += %w( appointments_customer.scss )
+

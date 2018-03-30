@@ -1,0 +1,28 @@
+
+  <%= week_calendar events: @appointments do |date, appointments| %>
+      <div class="timetable-day-body wday-<%= date.to_date.cwday%>" style="height: <%= (@settings[:latest_hour]-@settings[:earler_hour]) * @settings[:pixel_per_hour] %>px;" >
+      <% appointments.each do |appointment| %>
+
+          <% @top_offset = GetTimeRangeInSeconds(@first_time, appointment.start_time) / 60 %>
+          <% @height = (appointment.end_time - appointment.start_time) / 60 %>
+
+          <% @last_end_time = nil #date.to_date + 9.hour %>
+          <% @last_place_id = 0 %>
+
+          <% if appointment.id >= 0 %>
+              <% if signed_in? && !current_user.customer.nil? && current_user.customer.id == appointment.customer_id %>
+                  <%= render 'appointment_element', appointment: appointment, settings: @settings %>
+              <% else %>
+                  <%= render 'appointment_busy_element', appointment: appointment, settings: @settings %>
+              <% end %>
+          <% else %>
+              <% if Time.current < appointment.start_time %>
+                  <%= render 'appointment_new_element', appointment: appointment, settings: @settings %>
+              <% else %>
+                  <%= render 'appointment_busy_element', appointment: appointment, settings: @settings %>
+
+              <% end %>
+          <% end %>
+      <% end %>
+      </div>
+  <% end %>

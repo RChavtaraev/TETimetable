@@ -12,10 +12,10 @@
           </span>
         </div>
     <% end %>
-    <%= will_paginate %>
+    <%= will_paginate previous_label: '< назад', next_label: 'далее >' %>
     <ul class="list-group">
       <%= render @customers %>
     </ul>
-    <%= will_paginate %>
+    <%= will_paginate previous_label: '< назад', next_label: 'далее >'%>
   </div>
 </div>

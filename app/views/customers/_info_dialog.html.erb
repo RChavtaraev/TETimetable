@@ -1,0 +1,26 @@
+<div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+      <h3 id="myModalLabel"><%= @customer.name %></h3>
+    </div>
+        <div class="modal-body ui-front">
+          <div class="customer-info">
+            <div><strong>Телефон:</strong>&nbsp;<span class="fieldvalue"><%= @customer.phone %></span></div>
+            <div><strong>Адрес:</strong>&nbsp;<span class="fieldvalue"><%= @customer.address %></span></div>
+            <div><strong class="fieldname">E-mail:</strong>&nbsp;<span class="fieldvalue"><a href="mailto: <%= @customer.email %>"><%= @customer.email %></a></span></div>
+            <div><strong class="fieldname">Дата рождения:</strong>&nbsp;<span class="fieldvalue"><%= @customer.birth_date %></span></div>
+            <div><strong class="fieldname">Сведения:</strong></div>
+            <div><span class="fieldvalue multiline"><%= @customer.comment %></span></div>
+          </div>
+
+          <a href="/customers/<%= @customer.id %>/edit" >Изменить</a>
+
+
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-large btn-primarн" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+        </div>
+
+  </div>
+</div>
