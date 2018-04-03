@@ -1,0 +1,31 @@
+<% provide(:title, 'Регистрация') %>
+<h1>Регистрация</h1>
+
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+    <%= form_for(@user) do |user_fields| %>
+        <%= render 'shared/error_messages', object: @user, title: "Ошибки при регистрации: " %>
+        <%= render 'shared/error_messages', object: @user.customer, title: "Ошибки при регистрации: " %>
+
+            <%= render 'user_fields', f:user_fields%>
+
+
+          <%= fields_for(@user.customer) do |customer_fields| %>
+                <%= customer_fields.label :name, "ФИО:" %>
+                <%= customer_fields.text_field :name, class: "form-control" %>
+
+                <%= customer_fields.label :phone, "Телефон:" %>
+                <%= customer_fields.telephone_field :phone, id: 'phone', class: "form-control" %>
+
+                <%= customer_fields.label :birth_date, "Дата рождения:" %>
+                <%= customer_fields.date_field :birth_date, id: 'birth_date', class: "form-control" %>
+
+                <%= customer_fields.label :address, "Адрес:" %>
+                <%= customer_fields.text_area :address, id: 'address', class: "form-control"  %>
+
+          <% end %>
+
+        <%= user_fields.submit "Зарегистрироваться", class: "btn btn-large btn-primary" %>
+    <% end %>
+  </div>
+</div>

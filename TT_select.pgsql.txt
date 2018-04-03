@@ -1,0 +1,22 @@
+SELECT Apt.id, 1 AS status, start_time, end_time, place_id, C.Name AS customer_name, places.name AS place_name
+FROM appointments AS Apt
+INNER JOIN customers as C ON C.id = customer_id
+INNER JOIN places ON places.id = place_id
+WHERE start_time::date >= '2017-08-01' AND start_time::date <= '2017-09-08'
+UNION
+SELECT -1 as id, 0 AS status, start_time, end_time, place_id, '' as customer_name, places.name AS place_name
+FROM timetables AS T1
+INNER JOIN places ON places.id = place_id
+WHERE T1.start_time::date >= '2017-08-01' AND T1.start_time::date <= '2017-09-08' AND
+      NOT EXISTS (
+          SELECT Id
+          FROM appointments AS Apt
+          WHERE Apt.start_time::date >= '2017-08-01' AND Apt.start_time::date <= '2017-09-08' AND
+                ((T1.start_time <= Apt.start_time AND T1.end_time >= Apt.end_time) OR
+                 (T1.start_time <= Apt.start_time AND T1.end_time >= Apt.end_time) OR
+                 (T1.start_time < Apt.end_time AND T1.end_time > Apt.start_time) OR
+                 (T1.start_time < Apt.start_time AND T1.end_time > Apt.start_time) OR
+                 (T1.start_time >= Apt.start_time AND T1.end_time <= Apt.end_time))
+
+      )
+ORDER BY start_time
