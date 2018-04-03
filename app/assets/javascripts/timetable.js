@@ -1,15 +1,15 @@
 /**
  * Created by RChavtaraev on 01.03.2018.
  */
-var gridTable;
-var selectionInfo;
-var earler_time_in_seconds;
+var gridTable = null;
+var selectionInfo = null;
+var earler_time_in_seconds = 0;
 var ajaxCallInProcess = false;
 var pixel_per_hour = 27*4;
-var pixel_per_second = pixel_per_hour / 3600
+var pixel_per_second = pixel_per_hour / 3600;
 
 function init(addEventsBtn) {
-    initSelection(addEventsBtn)
+    initSelection(addEventsBtn);
     setTimeout(function() {
         rangeEvents();
     }, 0);
@@ -34,7 +34,7 @@ function initSelection(addEventsBtn)
 }
 
 function Date_parse(strDate){ // просто Date.parse возвращает NaN если дата разделенв символами '-'
-    var str = strDate.replace(/-/g, '/')
+    var str = strDate.replace(/-/g, '/');
     return new Date(Date.parse(str));
 }
 

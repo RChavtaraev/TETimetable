@@ -9,6 +9,7 @@ $(document).ready(function() {
         userCollapseText: 'скрыть подробности'
     });
 });
+
 function clr()
 {
     if ($('#id').val() != '') {
@@ -18,4 +19,4 @@ function clr()
         $('#birth_date').val("");
         $('#address').val("");
     }
-}
+};

@@ -1,7 +1,7 @@
 /**
  * Created by RChavtaraev on 20.03.2018.
  */
-var gridTable;
+var gridTable = null;
 var pixel_per_hour = 27*4;
 var pixel_per_second = pixel_per_hour / 3600;
 
@@ -15,7 +15,7 @@ function init() {
 }
 
 function Date_parse(strDate){
-    var str = strDate.replace(/-/g, '/')
+    var str = strDate.replace(/-/g, '/');
     return Date.parse(str);
 }
 

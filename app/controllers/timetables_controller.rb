@@ -124,7 +124,7 @@ class TimetablesController < ApplicationController
       end
     end
     respond_to do |format|
-      if errmsg = ""
+      if errmsg == ""
         format.json { render :json => {:success => true, :events => appendevents} }
         format.html
       else
@@ -205,18 +205,19 @@ def home
     FROM appointments AS Apt
     INNER JOIN customers as C ON C.id = customer_id
     INNER JOIN places ON places.id = place_id
-    WHERE start_time::date >= #{sql_first_date} AND start_time::date <= #{sql_last_date}
+    WHERE start_time::date >= {sql_first_date} AND start_time::date <= [#]{sql_last_date}
     UNION
     SELECT -1 as id, 0 AS status, start_time, end_time, place_id, -1 as customer_id, '' as customer_name, '' AS customer_phone, places.name AS place_name
     FROM timetables AS T1
     INNER JOIN places ON places.id = place_id
     WHERE
-          T1.start_time::date >= #{sql_first_date} AND
-          T1.start_time::date <= #{sql_last_date} AND
+          T1.start_time::date >= [#]{sql_first_date} AND
+          T1.start_time::date <= [#]{sql_last_date} AND
     NOT EXISTS (
                    SELECT Id
     FROM appointments AS Apt
-    WHERE Apt.start_time::date >= #{sql_first_date} AND Apt.start_time::date <= #{sql_last_date} AND
+    WHERE Apt.start_time::date >=[#]{sql_first_date} AND Apt.start_time::date <= [#]{sql_last_date}
+AND
     ((T1.start_time <= Apt.start_time AND T1.end_time >= Apt.end_time) OR
     (T1.start_time <= Apt.start_time AND T1.end_time >= Apt.end_time) OR
     (T1.start_time < Apt.end_time AND T1.end_time > Apt.start_time) OR
@@ -232,7 +233,7 @@ def home
       @first_time = appointment.start_time if appointment.start_time < @first_time
     end
     @settings = getSettings(@appointments, @first_time.to_date.beginning_of_week)
-    #@appointments = Appointment.where("start_time::date >= ? AND end_time::date <= ?", first_data, last_data)
+    [#]@appointments = Appointment.where("start_time::date >= ? AND end_time::date <= ?", first_data, last_data)
 
   end
 DOC
