@@ -3,7 +3,7 @@ class User < ApplicationRecord
   before_save { self.email = email.downcase }
   #before_save { self.name = name.upcase }
   before_create :create_remember_token
-  validates :name, presence: { message: "Имя не может быть пустым"}, uniqueness: true
+  validates :name, presence: { message: "Имя не может быть пустым"}, uniqueness: { message: "Пользователь с таким именем уже существует"} #true
   validates :email, presence: { message: "Email не может быть пустым"}, email_format: { message: "Неверный формат email" }, uniqueness: true
   validates :isadmin, presence: true
   has_secure_password

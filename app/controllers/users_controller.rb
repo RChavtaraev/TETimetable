@@ -18,7 +18,7 @@ class UsersController < ApplicationController
         if @user.save
           sign_in @user
           flash[:success] = "Добро пожаловать!"
-          redirect_to controller: 'timetables', action: 'home'
+          redirect_to controller: 'appointments', action: 'index'
         else
           render 'new'
         end

@@ -15,22 +15,6 @@ ActiveRecord::Schema.define(version: 20170908175014) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "TT_by_date", id: :integer, default: -> { "nextval('appointments_id_seq'::regclass)" }, force: :cascade do |t|
-    t.date    "date"
-    t.integer "place_id"
-    t.integer "status"
-    t.time    "start_time"
-    t.time    "end_time"
-  end
-
-  create_table "TT_by_weekday", id: :integer, default: -> { "nextval('appointments_id_seq'::regclass)" }, force: :cascade do |t|
-    t.integer "place_id"
-    t.integer "status"
-    t.integer "day_of_week"
-    t.time    "end_time"
-    t.time    "start_time"
-  end
-
   create_table "appointments", force: :cascade do |t|
     t.integer  "customer_id"
     t.datetime "start_time"
