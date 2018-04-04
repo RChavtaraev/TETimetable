@@ -1,7 +1,7 @@
 /**
  * Created by RChavtaraev on 20.03.2018.
  */
-var gridTable = null;
+var gridTable;
 var pixel_per_hour = 27*4;
 var pixel_per_second = pixel_per_hour / 3600;
 

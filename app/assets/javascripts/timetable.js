@@ -1,14 +1,16 @@
 /**
  * Created by RChavtaraev on 01.03.2018.
  */
-var gridTable = null;
-var selectionInfo = null;
-var earler_time_in_seconds = 0;
-var ajaxCallInProcess = false;
+var gridTable;
+var selectionInfo;
+var earler_time_in_seconds;
+var ajaxCallInProcess;
 var pixel_per_hour = 27*4;
 var pixel_per_second = pixel_per_hour / 3600;
 
 function init(addEventsBtn) {
+    earler_time_in_seconds = 0;
+    ajaxCallInProcess = false;
     initSelection(addEventsBtn);
     setTimeout(function() {
         rangeEvents();
@@ -22,11 +24,9 @@ function initSelection(addEventsBtn)
     selectionInfo = {};
     selectionInfo.addEventsBtn = addEventsBtn;
     selectionInfo.eventsintervalPnl = selectionInfo.addEventsBtn.querySelector(".eventsinterval");
-
     gridTable.onmousedown = function(e) {
         if (e.buttons & 1 > 0 && e.target.tagName == "TD") //left btn pressed
         {
-
             startSelection(e.target, e.shiftKey);
             return false;
         };

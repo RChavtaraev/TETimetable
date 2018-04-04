@@ -1,4 +1,5 @@
-
+<%= stylesheet_link_tag params[:controller] %>
+<%= javascript_include_tag "timetable.js" %>
 <% provide(:title, 'Редактирование расписания') %>
 
 <script type="application/javascript">
@@ -12,44 +13,12 @@
       selects[i].value = source.value;
     }
 
-    changed = true;
+    //changed = true;
     $("[name='commit']").removeAttr('disabled');
   }
-
-  /*function day_checked_change (source) {
-    ids = source.id.split('_');
-    for (i = ids[1]; i <=  ids[2]; i++ ){
-      $('#session_checked_'+i)[0].checked = source.checked;
-      session_check_change($('#session_checked_'+i)[0]);
-    }
-    changed = true;
-    $("[name='commit']").removeAttr('disabled');
-  }
-
-  function session_change(source) {
-    changed = true;
-    $("[name='commit']").removeAttr('disabled');
-  }
-
-  function session_check_change(source) {
-    if (source.checked) {
-      $(source).closest("div.panel").removeClass("panel-danger").addClass("panel-success");
-    }
-    else {
-      $(source).closest("div.panel").removeClass("panel-success").addClass("panel-danger");
-    };
-    changed = true;
-    $("[name='commit']").removeAttr('disabled');
-  }
-
-  function form_submit() {
-    changed = false;
-  }*/
-
-
 
   $( document).ready(function(){
-    changed = false;
+    ///changed = false;
     if (!initialized) {
       init(document.getElementById("addEventsBtn"));
       initialized = true;
@@ -59,14 +28,16 @@
 
 <script type="application/javascript"  data-turbolinks-eval="false">
   $( document ).on('turbolinks:load', function() {
+    //console.info(initialized);
+    //console.info(gridTable);
     if (!initialized) {
       init(document.getElementById("addEventsBtn"));
       initialized = true;
     }
   })
 </script>
-<%= stylesheet_link_tag params[:controller] %>
-<%= javascript_include_tag "timetable.js" %>
+
+
 <div id="edit_modal-window" class="modal fade" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
 <div>
     <div>
