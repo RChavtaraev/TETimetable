@@ -7,10 +7,10 @@ var pixel_per_second = pixel_per_hour / 3600;
 
 function init() {
     gridTable = document.querySelector(".timetable-grid");
-    setTimeout(function () {
+    //setTimeout(function () {
         rangeEvents();
         rangeAppendButtons();
-    }, 0);
+    //}, 0);
     //console.info("init ok");
 }
 

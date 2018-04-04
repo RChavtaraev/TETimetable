@@ -8,21 +8,21 @@ var ajaxCallInProcess;
 var pixel_per_hour = 27*4;
 var pixel_per_second = pixel_per_hour / 3600;
 
-function init(addEventsBtn) {
+function init(add_EventsBtn) {
     earler_time_in_seconds = 0;
     ajaxCallInProcess = false;
-    initSelection(addEventsBtn);
-    setTimeout(function() {
+    initSelection(add_EventsBtn);
+    //setTimeout(function() {
         rangeEvents();
-    }, 0);
+    //}, 0);
 }
 
-function initSelection(addEventsBtn)
+function initSelection(add_EventsBtn)
 {
     gridTable = document.querySelector(".timetable-grid");
     earler_time_in_seconds = gridTable.dataset.earlertime;
     selectionInfo = {};
-    selectionInfo.addEventsBtn = addEventsBtn;
+    selectionInfo.addEventsBtn = add_EventsBtn;
     selectionInfo.eventsintervalPnl = selectionInfo.addEventsBtn.querySelector(".eventsinterval");
     gridTable.onmousedown = function(e) {
         if (e.buttons & 1 > 0 && e.target.tagName == "TD") //left btn pressed
@@ -47,9 +47,9 @@ function rangeEvents(){
         var td = gridTable.rows[+tdInd[1]].cells[+tdInd[0]];
         var tdRect = td.getBoundingClientRect();
         var timedelta = (Date_parse(events[i].dataset.starttime) - Date_parse(td.dataset.eventtime)) * pixel_per_second / 1000;
-        //if (timedelta < 0) {
-            //console.info("timedelta:" + timedelta + " starttime:" + events[i].dataset.starttime + " eventtime:" + td.dataset.eventtime);
-        //}
+        if (!(timedelta > 0)) {
+            console.info("timedelta:" + timedelta + " starttime:" + events[i].dataset.starttime + " eventtime:" + td.dataset.eventtime);
+        };
         //console.info(timedelta);
         events[i].style.top = tdRect.top - parentRect.top + timedelta + "px";
     }
