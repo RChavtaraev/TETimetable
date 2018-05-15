@@ -1,0 +1,5 @@
+<h1> Здравствуйте, <%= @user.name %>! </h1>
+<p>
+  Для завершения активации перейдите, пожалуйста,
+<a href="<%= edit_account_activation_url(@user.activation_token, email: @user.email) %>">по ссылке</a>
+</p>

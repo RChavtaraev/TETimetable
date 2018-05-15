@@ -1,0 +1,5 @@
+Здравствуйте, <%= @user.name %>!
+
+Для завершения активации, нужно перейти по ссылке:
+
+<%= edit_account_activation_url(@user.activation_token, email: @user.email) %>

@@ -16,9 +16,12 @@ class UsersController < ApplicationController
       @user.customer = customer
       if customer.save
         if @user.save
-          sign_in @user
-          flash[:success] = "Добро пожаловать!"
-          redirect_to controller: 'appointments', action: 'index'
+          UserMailer.account_activation(@user).deliver_now
+          flash[:info] = "Проверьте Ваш почтовый ящик для завершения регистрации"
+          redirect_to root_url
+          #sign_in @user
+          #flash[:success] = "Добро пожаловать!"
+          #redirect_to controller: 'appointments', action: 'index'
         else
           render 'new'
         end

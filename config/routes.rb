@@ -2,6 +2,10 @@ Rails.application.routes.draw do
 
 
 
+  get 'password_resets/new'
+
+  get 'password_resets/edit'
+
   root 'appointments#index'
 
   get "customers/:id/info_dialog", to: "customers#info_dialog"
@@ -34,10 +38,13 @@ Rails.application.routes.draw do
   resources :users
   match '/signup',  to: 'users#new', via: 'get'
 
+  resources :account_activations, only: [:edit]
 
   resources :sessions, only: [:new, :create, :destroy]
   match  '/signin',  to: 'sessions#new', via: 'get'
   match '/signout', to: 'sessions#destroy', via: 'delete'
+
+  resources :password_resets, only: [:new, :create, :edit, :update]
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
